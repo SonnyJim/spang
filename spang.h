@@ -14,6 +14,7 @@ extern int screen_height;
 extern int running;
 extern int draw_hitbox;
 extern int score_bonus;
+extern int paused;
 
 extern Mix_Chunk *laser1;
 extern Mix_Chunk *explosion;
@@ -96,6 +97,13 @@ void powerup_add (int type, int xpos, int ypos);
 void powerups_draw (void);
 void powerup_smartbomb (void);
 extern int megashot_active;
+
+
+
+void explosions_init (void);
+void explosion_add (int xpos, int ypos);
+void explosions_draw (void);
+extern int trippy_mode;
 
 enum
 {

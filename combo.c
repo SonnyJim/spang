@@ -13,26 +13,31 @@ void combo_set_level (int level)
     {
         case 0:
         default:
+            trippy_mode = 0;
             player.bullet_max = 2;
             player.bullet_size = 10;
             player.bullet_delay = 250;
             break;
         case 1:
+            trippy_mode = 0;
             player.bullet_max = 4;
             player.bullet_delay = 200;
             player.bullet_size = 15;
             break;
         case 2:
+            trippy_mode = 1;
             player.bullet_max = 5;
             player.bullet_delay = 150;
             player.bullet_size = 20;
             break;
         case 3:
+            trippy_mode = 2;
             player.bullet_max = 10;
             player.bullet_delay = 100;
             player.bullet_size = 30;
             break;
         case 4:
+            trippy_mode = 3;
             player.bullet_max = 20;
             player.bullet_delay = 50;
             player.bullet_size = 40;

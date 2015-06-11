@@ -69,6 +69,8 @@ void ball_split (int ball_num)
 {
     int size;
     Mix_PlayChannel( SND_EXPLOSION, explosion, 0 );
+    explosion_add (ball_rects[ball_num].x + (ball_rects[ball_num].w / 2),
+                               ball_rects[ball_num].y + (ball_rects[ball_num].h /2 ));
     combo_increment ();
     //If the ball is only size 1, then just destroy it
     if ( balls[ball_num].size == 1)

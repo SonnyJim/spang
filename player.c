@@ -92,7 +92,12 @@ void player_hit (void)
     if (player.health <= 0)
         running = 0;
     else if (player.health <= 20)
+    {
+        Mix_PauseMusic();
         Mix_PlayChannel (SND_MUSIC, alarm, 0);
+    }
+    else if (player.health > 20 && !megashot_active)
+        Mix_ResumeMusic();
 }
 
 void player_move_left (void)
@@ -123,6 +128,8 @@ void player_level_up (void)
         powerup_add (POWERUP_SLOW, rand () % screen_width, 0);
     if (player.level % 5 == 0)
         powerup_add (POWERUP_MEGASHOT, rand () % screen_width, 0);
+    if (player.level % 4 == 0)
+        player.smartbomb = 1;
     show_level_up ();
     player.stage_time = SDL_GetTicks ();
 }

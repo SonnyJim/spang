@@ -24,7 +24,7 @@ struct powerup_t
 };
 
 struct powerup_t powerups[MAX_POWERUPS];
-SDL_Texture *powerups_tex[3];
+SDL_Texture *powerups_tex[4];
 
 void powerups_init (void)
 {
@@ -147,7 +147,7 @@ void powerups_draw (void)
     }
     if (megashot_active && megashot_timer + MEGASHOT_TIME > SDL_GetTicks ())
     {
-        Mix_HaltMusic ();
+        Mix_PauseMusic ();
         combo_set_level (4);
     }
     else if (megashot_active && megashot_timer + MEGASHOT_TIME < SDL_GetTicks ())

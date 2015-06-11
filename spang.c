@@ -4,6 +4,7 @@ Bonus wave
 */
 
 #include "spang.h"
+int paused;
 
 int screen_height, screen_width;
 SDL_Renderer *renderer;
@@ -52,6 +53,7 @@ void detect_playerhit (void)
             if (check_axis (ball_rects[i], player_hitrect1) ||
                 check_axis (ball_rects[i], player_hitrect2))
             {
+                explosion_add (player.xpos, player.ypos);
                 player_hit ();
                 if (balls[i].size == 1)
                 {
@@ -200,18 +202,20 @@ int main (int argc, char *argv[])
     bullets_init ();
     player_init ();
     powerups_init ();
-
+    explosions_init ();
 
     running = 1;
     while (running)
     {
         sdl_read_input ();
+        if (!paused)
+        {
         balls_check ();
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear (renderer);
         SDL_RenderCopy (renderer, bg_tex, NULL, NULL);
 
-
+        explosions_draw ();
         balls_draw ();
         bullets_draw ();
         player_draw ();
@@ -219,7 +223,7 @@ int main (int argc, char *argv[])
 
         detect_playerhit ();
         render_score ();
-
+        }
         SDL_RenderPresent (renderer);
     }
     Mix_HaltMusic ();

@@ -52,12 +52,15 @@ void sdl_read_input (void)
                     case SDLK_RIGHT:
                         right = 1;
                         break;
-                    case SDLK_c:
-                        Mix_PlayChannel (-1, health1, 0);
-                        break;
                     case SDLK_SPACE:
                         if (player.smartbomb)
                             powerup_smartbomb ();
+                        break;
+                    case SDLK_p:
+                        if (paused)
+                            paused = 0;
+                        else
+                            paused = 1;
                         break;
                 }
                 break;
@@ -77,7 +80,8 @@ void sdl_read_input (void)
                 break;
         }
     }
-
+    if (paused)
+        return;
     if (fire)
         bullet_add ();
     if (left && !right)
@@ -129,7 +133,7 @@ int sdl_init (void)
     int initted = Mix_Init (flags);
     if ((initted&flags) != flags)
     {
-        printf(stderr, "Mix_Init: Failed to init required ogg and mod support!\n");
+        fprintf (stderr, "Mix_Init: Failed to init required ogg and mod support!\n");
         fprintf (stderr, "Mix_Init: %s\n", Mix_GetError());
     }
     music = Mix_LoadMUS( "data/sfx/cyberrid.mod" );
