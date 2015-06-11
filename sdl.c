@@ -8,6 +8,8 @@ Mix_Chunk *playerhit = NULL;
 Mix_Chunk *death = NULL;
 Mix_Chunk *comboup = NULL;
 Mix_Chunk *combodown = NULL;
+Mix_Music *music = NULL;
+Mix_Chunk *test = NULL;
 
 void sdl_read_input (void)
 {
@@ -35,6 +37,12 @@ void sdl_read_input (void)
                         else
                             draw_hitbox = 1;
                         break;
+                    case SDLK_m:
+                        if ( Mix_PausedMusic())
+                            Mix_ResumeMusic();
+                        else
+                            Mix_PauseMusic();
+                        break;
                     case SDLK_LCTRL:
                         fire = 1;
                         break;
@@ -43,6 +51,13 @@ void sdl_read_input (void)
                         break;
                     case SDLK_RIGHT:
                         right = 1;
+                        break;
+                    case SDLK_c:
+                        Mix_PlayChannel (-1, health1, 0);
+                        break;
+                    case SDLK_SPACE:
+                        if (player.smartbomb)
+                            powerup_smartbomb ();
                         break;
                 }
                 break;
@@ -73,7 +88,7 @@ void sdl_read_input (void)
 
 int sdl_init (void)
 {
-       SDL_DisplayMode videomode;
+    SDL_DisplayMode videomode;
     SDL_Window *window;
 
     if (SDL_Init (SDL_INIT_VIDEO |SDL_INIT_AUDIO) != 0)
@@ -110,10 +125,21 @@ int sdl_init (void)
         return 1;
     }
 
-    if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 512 ) == -1 )
+    int flags = MIX_INIT_OGG|MIX_INIT_MOD;
+    int initted = Mix_Init (flags);
+    if ((initted&flags) != flags)
+    {
+        printf(stderr, "Mix_Init: Failed to init required ogg and mod support!\n");
+        fprintf (stderr, "Mix_Init: %s\n", Mix_GetError());
+    }
+    music = Mix_LoadMUS( "data/sfx/cyberrid.mod" );
+    if (music == NULL)
+        fprintf (stderr, "Error loading music\n");
+
+    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 1024 ) == -1 )
         return 1;
     Mix_AllocateChannels (32);
-
+    Mix_PlayMusic (music, -1);
     if (TTF_Init () == -1)
     {
         fprintf (stderr, "Error setting up font system\n");

@@ -13,6 +13,7 @@ extern int screen_width;
 extern int screen_height;
 extern int running;
 extern int draw_hitbox;
+extern int score_bonus;
 
 extern Mix_Chunk *laser1;
 extern Mix_Chunk *explosion;
@@ -23,7 +24,11 @@ extern Mix_Chunk *combodown;
 extern Mix_Chunk *levelup;
 extern Mix_Chunk *speedup;
 extern Mix_Chunk *alarm;
-extern Mix_Chunk *health;
+extern Mix_Chunk *health1;
+extern Mix_Chunk *kaching;
+extern Mix_Chunk *slowdown;
+extern Mix_Chunk *alarmreverse;
+extern Mix_Chunk *test;
 
 enum
 {
@@ -38,7 +43,11 @@ extern SDL_Texture *ball_tex;
 extern SDL_Texture *bullet_tex;
 extern SDL_Texture *ship_tex;
 extern SDL_Texture *bg_tex;
+
 extern SDL_Texture *health_tex;
+extern SDL_Texture *coin_tex;
+extern SDL_Texture *slow_tex;
+extern SDL_Texture *megashot_tex;
 
 extern SDL_Renderer *renderer;
 extern SDL_Rect ball_rects[NUM_BALLS];
@@ -62,7 +71,7 @@ void ball_split (int ball_num);
 void balls_init_all (void);
 void balls_draw (void);
 void balls_check (void);
-void balls_speed_up (void);
+void balls_speed_change (void);
 
 void detect_collision (int num);
 
@@ -76,6 +85,7 @@ void player_level_up (void);
 
 void combo_increment (void);
 void combo_decrement (void);
+void combo_set_level (int level);
 
 int fonts_load (void);
 int render_score (void);
@@ -83,11 +93,17 @@ void show_level_up (void);
 
 void powerups_init (void);
 void powerup_add (int type, int xpos, int ypos);
+void powerups_draw (void);
+void powerup_smartbomb (void);
+extern int megashot_active;
 
 enum
 {
     POWERUP_NONE,
-    POWERUP_HEALTH
+    POWERUP_HEALTH,
+    POWERUP_COIN,
+    POWERUP_SLOW,
+    POWERUP_MEGASHOT
 };
 
 struct ball_t
@@ -120,6 +136,7 @@ struct player_t
     int level;
     Uint32 stage_time;
     int last_size;
+    int smartbomb;
 };
 
 struct player_t player;

@@ -2,7 +2,7 @@
 #define COMBO_MAX 50
 Mix_Chunk *speedup = NULL;
 
-static void combo_set_level (int level)
+void combo_set_level (int level)
 {
     if (level > player.combo_level)
         Mix_PlayChannel (SND_COMBO, comboup, 0);
@@ -61,7 +61,7 @@ void combo_increment (void)
     {
         Mix_PlayChannel (SND_MUSIC, speedup, 0);
         player.speed += 0.5;
-        balls_speed_up ();
+        balls_speed_change ();
 
     }
     if (player.combo < COMBO_MAX)
@@ -71,6 +71,7 @@ void combo_increment (void)
 
 void combo_decrement (void)
 {
+    score_bonus = 10;
     player.combo -= 2;
     if (player.combo < 0)
         player.combo = 1;

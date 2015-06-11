@@ -110,8 +110,17 @@ int init_audio (void)
     alarm = Mix_LoadWAV ("data/sfx/alarm1.wav");
     if (alarm == NULL)
         return 1;
-    health = Mix_LoadWAV ("data/sfx/health.wav");
-    if (health == NULL)
+    health1 = Mix_LoadWAV ("data/sfx/health.wav");
+    if (health1 == NULL)
+        return 1;
+    kaching = Mix_LoadWAV ("data/sfx/kaching.wav");
+    if (kaching == NULL)
+        return 1;
+    slowdown = Mix_LoadWAV ("data/sfx/slowdown.wav");
+    if (slowdown == NULL)
+        return 1;
+    alarmreverse = Mix_LoadWAV ("data/sfx/alarmreverse.wav");
+    if (alarmreverse == NULL)
         return 1;
     return 0;
 }
@@ -144,12 +153,34 @@ void init_tex (void)
             fprintf (stderr, "Error loading bg: %s\n", SDL_GetError ());
         bg_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
 
+
         ball_srf = IMG_Load ("data/gfx/health.png");
         if (ball_srf == NULL)
             fprintf (stderr, "Error loading health: %s\n", SDL_GetError ());
         health_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
         if (health_tex == NULL)
             fprintf (stderr, "Error loading health: %s\n", SDL_GetError ());
+
+        ball_srf = IMG_Load ("data/gfx/coin.png");
+        if (ball_srf == NULL)
+            fprintf (stderr, "Error loading coin: %s\n", SDL_GetError ());
+        coin_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
+        if (coin_tex == NULL)
+            fprintf (stderr, "Error loading coin: %s\n", SDL_GetError ());
+
+        ball_srf = IMG_Load ("data/gfx/slow.png");
+        if (ball_srf == NULL)
+            fprintf (stderr, "Error loading slow: %s\n", SDL_GetError ());
+        slow_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
+        if (coin_tex == NULL)
+            fprintf (stderr, "Error loading slow: %s\n", SDL_GetError ());
+
+        ball_srf = IMG_Load ("data/gfx/megashot.png");
+        if (ball_srf == NULL)
+            fprintf (stderr, "Error loading megashot: %s\n", SDL_GetError ());
+        megashot_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
+        if (coin_tex == NULL)
+            fprintf (stderr, "Error loading megashot: %s\n", SDL_GetError ());
 
         SDL_FreeSurface (ball_srf);
 }
@@ -191,9 +222,10 @@ int main (int argc, char *argv[])
 
         SDL_RenderPresent (renderer);
     }
-    fprintf (stdout, "Score: %lld\n", player.score);
-    fprintf (stdout, "Shots fired: %lld\n", player.shots_fired);
-    fprintf (stdout, "Hits: %lld\n", player.hits);
+    Mix_HaltMusic ();
+    fprintf (stdout, "Score: %ld\n", player.score);
+    fprintf (stdout, "Shots fired: %ld\n", player.shots_fired);
+    fprintf (stdout, "Hits: %ld\n", player.hits);
     Mix_PlayChannel( -1, death, 0 );
     SDL_Delay (3000);
     running = 1;

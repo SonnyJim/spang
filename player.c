@@ -7,9 +7,9 @@ SDL_Texture *ship_tex;
 
 Mix_Chunk *alarm;
 
-int score_bonus = 100;
+int score_bonus = 10;
 
-int invuln_delay = 500;
+int invuln_delay = 1500;
 
 void player_init (void)
 {
@@ -35,7 +35,7 @@ void player_init (void)
     player_hitrect1.h = 25;
     player_hitrect2.w = 50;
     player_hitrect2.h = 25;
-
+    player.smartbomb = 1;
 }
 
 void player_update_hitrect (void)
@@ -78,6 +78,8 @@ void player_score (int size)
     else
         score_bonus = 10;
     player.last_size = size;
+    if (score_bonus == 800)
+        powerup_add (POWERUP_COIN, rand () % screen_width, 0);
 }
 void player_hit (void)
 {
@@ -117,6 +119,10 @@ void player_level_up (void)
     {
         fprintf (stdout, "Level %i: Stage time: %i\n", player.level, (SDL_GetTicks() - player.stage_time) / 100);
     }
+    if (player.level % 3 == 0)
+        powerup_add (POWERUP_SLOW, rand () % screen_width, 0);
+    if (player.level % 5 == 0)
+        powerup_add (POWERUP_MEGASHOT, rand () % screen_width, 0);
     show_level_up ();
     player.stage_time = SDL_GetTicks ();
 }

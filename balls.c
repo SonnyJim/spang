@@ -3,7 +3,7 @@
 SDL_Texture *ball_tex = NULL;
 Mix_Chunk *levelup = NULL;
 
-void balls_speed_up (void)
+void balls_speed_change (void)
 {
     int i;
     for (i = 0; i < NUM_BALLS; i++)
