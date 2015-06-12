@@ -49,8 +49,8 @@ void explosion_add (int xpos, int ypos)
                 explosions[i][j].particle_rect.y = ypos;
                 if (trippy_mode)
                 {
-                    explosions[i][j].xvel = rand() % (20 * trippy_mode) - 10;
-                    explosions[i][j].yvel = rand() % (25 * trippy_mode) - 10;
+                    explosions[i][j].xvel = rand() % (20 * trippy_mode) - (10 * trippy_mode);
+                    explosions[i][j].yvel = rand() % (25 * trippy_mode) - (10 * trippy_mode);
                     explosions[i][j].colour.r = 128 * trippy_mode;
                     explosions[i][j].colour.g = 128 * trippy_mode;
                     explosions[i][j].colour.b = 128 * trippy_mode;

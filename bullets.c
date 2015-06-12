@@ -1,6 +1,6 @@
 #include "spang.h"
-SDL_Texture *bullet_tex;
 
+SDL_Rect bullet_rects[MAX_BULLETS];
 Uint32 bullet_timer = 0;
 int bullets_on_screen = 0;
 
@@ -27,6 +27,7 @@ void bullet_add (void)
     if (bullet_timer + player.bullet_delay > SDL_GetTicks () || bullets_on_screen >= player.bullet_max)
         return;
     player.shots_fired++;
+    player.shots_fired_round++;
     bullets_on_screen++;
     Mix_PlayChannel( SND_LASER, laser1, 0 );
     for (i = 0; i < MAX_BULLETS; i++)

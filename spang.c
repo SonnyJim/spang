@@ -9,14 +9,6 @@ int paused;
 int screen_height, screen_width;
 SDL_Renderer *renderer;
 
-SDL_Rect ball_rects[NUM_BALLS];
-SDL_Rect bullet_rects[MAX_BULLETS];
-
-
-SDL_Texture *bullet_tex = NULL;
-SDL_Surface *ball_srf = NULL;
-SDL_Texture *bg_tex = NULL;
-
 int running;
 int draw_hitbox = 0;
 
@@ -46,18 +38,22 @@ int check_axis (SDL_Rect a, SDL_Rect b)
 void detect_playerhit (void)
 {
     int i;
-    for (i = 0; i < NUM_BALLS; i++)
+    for (i = 0; i < MAX_BALLS; i++)
     {
         if (balls[i].size > 0)
         {
-            if (check_axis (ball_rects[i], player_hitrect1) ||
-                check_axis (ball_rects[i], player_hitrect2))
+            if (check_axis (balls[i].rect, player_hitrect1) ||
+                check_axis (balls[i].rect, player_hitrect2))
             {
-                explosion_add (player.xpos, player.ypos);
+                if (player.invuln_time)
+                    return;
+
+                explosion_add (player.xpos + (player_rect.w / 2), player.ypos + (player_rect.h / 2) );
+                //paused = 1;
                 player_hit ();
                 if (balls[i].size == 1)
                 {
-                    ball_split (i);
+                    ball_hit (i);
                 }
 
             }
@@ -68,141 +64,41 @@ void detect_playerhit (void)
 void detect_collision (int num)
 {
     int i;
-    for (i = 0; i < NUM_BALLS; i++)
+    for (i = 0; i < MAX_BALLS; i++)
     {
         if (balls[i].size > 0)
         {
-            if (check_axis (bullet_rects[num], ball_rects[i]))
+            if (check_axis (bullet_rects[num], balls[i].rect))
             {
-                player_score (balls[i].size);
                 bullet_remove (num);
-                ball_split (i);
+                ball_hit (i);
                 return;
             }
         }
     }
 }
 
-int init_audio (void)
-{
-    laser1 = Mix_LoadWAV("data/sfx/laser1.wav");
-    if (laser1 == NULL)
-        return 1;
-    explosion = Mix_LoadWAV ("data/sfx/explosion1.wav");
-    if (explosion == NULL)
-        return 1;
-    playerhit = Mix_LoadWAV ("data/sfx/hit.wav");
-    if (playerhit == NULL)
-        return 1;
-    death = Mix_LoadWAV ("data/sfx/death.wav");
-    if (death == NULL)
-        return 1;
-    comboup = Mix_LoadWAV ("data/sfx/comboup.wav");
-    if (comboup == NULL)
-        return 1;
-    combodown = Mix_LoadWAV ("data/sfx/combodown.wav");
-    if (combodown == NULL)
-        return 1;
-    levelup = Mix_LoadWAV ("data/sfx/levelup.wav");
-    if (levelup == NULL)
-        return 1;
-    speedup = Mix_LoadWAV ("data/sfx/speedup.wav");
-    if (speedup == NULL)
-        return 1;
-    alarm = Mix_LoadWAV ("data/sfx/alarm1.wav");
-    if (alarm == NULL)
-        return 1;
-    health1 = Mix_LoadWAV ("data/sfx/health.wav");
-    if (health1 == NULL)
-        return 1;
-    kaching = Mix_LoadWAV ("data/sfx/kaching.wav");
-    if (kaching == NULL)
-        return 1;
-    slowdown = Mix_LoadWAV ("data/sfx/slowdown.wav");
-    if (slowdown == NULL)
-        return 1;
-    alarmreverse = Mix_LoadWAV ("data/sfx/alarmreverse.wav");
-    if (alarmreverse == NULL)
-        return 1;
-    return 0;
-}
-
-void init_tex (void)
-{
-        ball_srf = IMG_Load ("data/gfx/asteroid1.png");
-        if (ball_srf == NULL)
-            fprintf (stderr, "Error loading ball_srf: %s\n", SDL_GetError ());
-
-        ball_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
-        if (ball_tex == NULL)
-            fprintf (stderr, "Error creating texture\n");
-
-        ball_srf = IMG_Load ("data/gfx/bullet1.png");
-        if (ball_srf == NULL)
-            fprintf (stderr, "Error loading bullet: %s\n", SDL_GetError ());
-
-        bullet_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
-        if (bullet_tex == NULL)
-            fprintf (stderr, "Error creating texture\n");
-
-        ball_srf = IMG_Load ("data/gfx/ship.png");
-        if (ball_srf == NULL)
-            fprintf (stderr, "Error loading ship: %s\n", SDL_GetError ());
-        ship_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
-
-        ball_srf = IMG_Load ("data/gfx/bg.png");
-        if (ball_srf == NULL)
-            fprintf (stderr, "Error loading bg: %s\n", SDL_GetError ());
-        bg_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
-
-
-        ball_srf = IMG_Load ("data/gfx/health.png");
-        if (ball_srf == NULL)
-            fprintf (stderr, "Error loading health: %s\n", SDL_GetError ());
-        health_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
-        if (health_tex == NULL)
-            fprintf (stderr, "Error loading health: %s\n", SDL_GetError ());
-
-        ball_srf = IMG_Load ("data/gfx/coin.png");
-        if (ball_srf == NULL)
-            fprintf (stderr, "Error loading coin: %s\n", SDL_GetError ());
-        coin_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
-        if (coin_tex == NULL)
-            fprintf (stderr, "Error loading coin: %s\n", SDL_GetError ());
-
-        ball_srf = IMG_Load ("data/gfx/slow.png");
-        if (ball_srf == NULL)
-            fprintf (stderr, "Error loading slow: %s\n", SDL_GetError ());
-        slow_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
-        if (coin_tex == NULL)
-            fprintf (stderr, "Error loading slow: %s\n", SDL_GetError ());
-
-        ball_srf = IMG_Load ("data/gfx/megashot.png");
-        if (ball_srf == NULL)
-            fprintf (stderr, "Error loading megashot: %s\n", SDL_GetError ());
-        megashot_tex = SDL_CreateTextureFromSurface (renderer, ball_srf);
-        if (coin_tex == NULL)
-            fprintf (stderr, "Error loading megashot: %s\n", SDL_GetError ());
-
-        SDL_FreeSurface (ball_srf);
-}
 
 int main (int argc, char *argv[])
 {
     if (sdl_init () != 0)
         return 1;
 
-    init_tex ();
-    if (init_audio ())
+    if (textures_init ())
+        return 1;
+    if (audio_init ())
     {
         fprintf (stderr, "Error loading SFX: %s\n", SDL_GetError());
+        return 1;
     }
 
+    hiscore_init ();
     balls_init_all ();
     bullets_init ();
     player_init ();
     powerups_init ();
     explosions_init ();
+    msg_init ();
 
     running = 1;
     while (running)
@@ -210,19 +106,22 @@ int main (int argc, char *argv[])
         sdl_read_input ();
         if (!paused)
         {
+
         balls_check ();
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear (renderer);
         SDL_RenderCopy (renderer, bg_tex, NULL, NULL);
 
+        player_draw ();
         explosions_draw ();
         balls_draw ();
         bullets_draw ();
-        player_draw ();
+
         powerups_draw ();
 
         detect_playerhit ();
         render_score ();
+        msg_draw ();
         }
         SDL_RenderPresent (renderer);
     }
@@ -230,9 +129,12 @@ int main (int argc, char *argv[])
     fprintf (stdout, "Score: %ld\n", player.score);
     fprintf (stdout, "Shots fired: %ld\n", player.shots_fired);
     fprintf (stdout, "Hits: %ld\n", player.hits);
+    float hitratio = (float) player.shots_fired / (float) player.hits;
+    fprintf (stdout, "Ratio: %.3f\n", hitratio);
+    fprintf (stdout, "Balls destroyed: %ld\n", player.destroyed_balls);
     Mix_PlayChannel( -1, death, 0 );
-    SDL_Delay (3000);
     running = 1;
+    hiscore_save ();
     while (running)
     {
         sdl_read_input();

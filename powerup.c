@@ -1,12 +1,10 @@
 #include "spang.h"
-#define MAX_POWERUPS 32
+#define MAX_POWERUPS 64
 #define POWERUP_DISPLAY_TIME 3000
 #define MEGASHOT_TIME 6000
+#define NUM_POWERUPS 4
 
-SDL_Texture *health_tex = NULL;
-SDL_Texture *coin_tex = NULL;
-SDL_Texture *slow_tex = NULL;
-SDL_Texture *megashot_tex = NULL;
+
 
 Mix_Chunk *health1;
 Mix_Chunk *kaching;
@@ -24,7 +22,8 @@ struct powerup_t
 };
 
 struct powerup_t powerups[MAX_POWERUPS];
-SDL_Texture *powerups_tex[4];
+SDL_Texture *powerups_tex[NUM_POWERUPS];
+const char *powerups_msg[NUM_POWERUPS + 1] = { "NONE", "Shield Up", "1000", "Slowdown", "MEGASHOT"};
 
 void powerups_init (void)
 {
@@ -46,7 +45,7 @@ void powerups_init (void)
 
 void powerup_add (int type, int xpos, int ypos)
 {
-    fprintf (stdout, "Adding power up at %li hits\n", player.hits);
+    //fprintf (stdout, "Adding power up at %li hits\n", player.hits);
     int i;
     for (i = 0; i < MAX_POWERUPS; i++)
     {
@@ -118,6 +117,9 @@ void powerups_check_collision (int num)
 {
     if (check_axis (powerups[num].rect, player_hitrect2))
     {
+        int type = powerups[num].type;
+        msg_show (powerups_msg[type], powerups[num].rect.x + (powerups[num].rect.w / 2),
+                  powerups[num].rect.y - (powerups[num].rect.h / 2), 3, font3, ALIGN_TCENTRE, white);
         powerup_collect (num);
     }
 }
@@ -161,10 +163,16 @@ void powerups_draw (void)
 void powerup_smartbomb (void)
 {
     int i;
+    msg_show ("BOOOOOM", 0, (screen_height / 2) - 100, 2, font2, ALIGN_CENTRE, red);
     player.smartbomb = 0;
-    for (i = 0; i < NUM_BALLS;i++)
+    for (i = 0; i < MAX_BALLS;i++)
     {
         if (balls[i].size > 0)
-            ball_split(i);
+        {
+            balls[i].hits = balls[i].strength;
+            ball_hit(i);
+        }
     }
+    if (player.speed > 1)
+        player.speed = 1;
 }

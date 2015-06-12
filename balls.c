@@ -1,12 +1,11 @@
 #include "spang.h"
 #include "balls.h"
-SDL_Texture *ball_tex = NULL;
 Mix_Chunk *levelup = NULL;
 
 void balls_speed_change (void)
 {
     int i;
-    for (i = 0; i < NUM_BALLS; i++)
+    for (i = 0; i < MAX_BALLS; i++)
     {
         if (balls[i].size != 0)
         {
@@ -23,11 +22,12 @@ void balls_speed_change (void)
     }
 }
 
+//Check to see how many balls left
 void balls_check (void)
 {
     int found = 0;
     int i;
-    for (i = 0; i < NUM_BALLS; i++)
+    for (i = 0; i < MAX_BALLS; i++)
     {
         if (balls[i].size != 0)
         {
@@ -37,19 +37,22 @@ void balls_check (void)
     }
     if (!found)
     {
-        player_level_up ();
+        level_up ();
     }
 }
-void ball_add (int size, int xpos, int ypos, int speed, int direction)
+
+void ball_add (int size, int xpos, int ypos, int speed, int direction, int strength)
 {
     int i;
-    for (i = 0; i < NUM_BALLS; i++)
+    for (i = 0; i < MAX_BALLS; i++)
     {
         if (balls[i].size == 0)
         {
             balls[i].size = size;
-            balls[i].xpos = xpos;
-            balls[i].ypos = ypos;
+            balls[i].rect.x = xpos;
+            balls[i].rect.y = ypos;
+            balls[i].strength = strength;
+            balls[i].hits = 0;
             if (direction)
                 balls[i].xvel = speed;
             else
@@ -57,21 +60,39 @@ void ball_add (int size, int xpos, int ypos, int speed, int direction)
 
             balls[i].yvel = -speed;
 
-            ball_rects[i].w = balls[i].size * 20;
-            ball_rects[i].h = ball_rects[i].w;
+            balls[i].rect.w = balls[i].size * 20;
+            balls[i].rect.h = balls[i].rect.w;
             return;
         }
     }
     return;
 }
 
-void ball_split (int ball_num)
+void ball_hit (int ball_num)
 {
     int size;
-    Mix_PlayChannel( SND_EXPLOSION, explosion, 0 );
-    explosion_add (ball_rects[ball_num].x + (ball_rects[ball_num].w / 2),
-                               ball_rects[ball_num].y + (ball_rects[ball_num].h /2 ));
+
     combo_increment ();
+    //player.combo_level starts at 0
+    if (player.combo_level <= 1)
+        balls[ball_num].hits++;
+    else
+        balls[ball_num].hits += player.combo_level + 1;
+
+    combo_hit (balls[ball_num].size);
+
+    if (balls[ball_num].hits < balls[ball_num].strength)
+    {
+        Mix_PlayChannel (SND_EXPLOSION, tink, 0);
+        return;
+    }
+
+    player_ball_destroyed ();
+    player_score (balls[ball_num].size);
+    Mix_PlayChannel( SND_EXPLOSION, explosion, 0 );
+    explosion_add (balls[ball_num].rect.x + (balls[ball_num].rect.w / 2),
+                               balls[ball_num].rect.y + (balls[ball_num].rect.h /2 ));
+
     //If the ball is only size 1, then just destroy it
     if ( balls[ball_num].size == 1)
     {
@@ -80,18 +101,20 @@ void ball_split (int ball_num)
     }
 
     if (player.hits % 50 == 0)
-        powerup_add (POWERUP_HEALTH, balls[ball_num].xpos, balls[ball_num].ypos);
+        powerup_add (POWERUP_HEALTH, balls[ball_num].rect.x, balls[ball_num].rect.y);
     size = balls[ball_num].size - 1;
+
+    ball_add (size, balls[ball_num].rect.x - (balls[ball_num].rect.w / 2), balls[ball_num].rect.y, player.speed, 0, balls[ball_num].strength - 1);
+    ball_add (size, balls[ball_num].rect.x + (balls[ball_num].rect.w / 2), balls[ball_num].rect.y, player.speed, 1, balls[ball_num].strength - 1);
+    //Remove the old ball last so the balls before can inherit the properties
     balls [ball_num].size = 0;
-    ball_add (size, balls[ball_num].xpos - (ball_rects[ball_num].w / 2), balls[ball_num].ypos, player.speed, 0);
-    ball_add (size, balls[ball_num].xpos + (ball_rects[ball_num].w / 2), balls[ball_num].ypos, player.speed, 1);
 }
 
 
 void ball_init (int num)
 {
-    balls[num].xpos = rand () % screen_width;
-    balls[num].ypos = rand () % screen_height;
+    balls[num].rect.x = rand () % screen_width;
+    balls[num].rect.y = rand () % screen_height;
     if (rand() % 2)
         balls[num].xvel = 5;
     else
@@ -105,14 +128,15 @@ void ball_init (int num)
     balls[num].angle = 0;
     balls[num].angle_vel = (rand () % 6) - 10;
     balls[num].size = 0;
-
+    balls[num].strength = 0;
+    balls[num].hits = 0;
 }
 
 
 void balls_init_all (void)
 {
     int i;
-    for (i = 0; i < NUM_BALLS; i++)
+    for (i = 0; i < MAX_BALLS; i++)
     {
         ball_init(i);
     }
@@ -120,8 +144,8 @@ void balls_init_all (void)
 
 void ball_update (int num)
 {
-    balls[num].xpos += balls[num].xvel;
-    balls[num].ypos += balls[num].yvel;
+    balls[num].rect.x += balls[num].xvel;
+    balls[num].rect.y += balls[num].yvel;
 
     balls[num].angle += balls[num].angle_vel;
     if (balls[num].angle > 360)
@@ -129,25 +153,21 @@ void ball_update (int num)
     if (balls[num].angle <= 0)
         balls[num].angle = 360;
 
-
-    ball_rects[num].x = balls[num].xpos;
-    ball_rects[num].y = balls[num].ypos;
-
-    if (balls[num].xpos <= 0)
+    if (balls[num].rect.x <= 0)
         balls[num].xvel = player.speed;
-    if (balls[num].xpos + ball_rects[num].w >= screen_width)
+    if (balls[num].rect.x + balls[num].rect.w >= screen_width)
         balls[num].xvel = -player.speed;
 
-    if (balls[num].ypos + ball_rects[num].h >= screen_height)
+    if (balls[num].rect.y + balls[num].rect.h >= screen_height)
         balls[num].yvel = -player.speed;
-    if (balls[num].ypos <= 0)
+    if (balls[num].rect.y <= 0)
         balls[num].yvel = player.speed;
 }
 
 void balls_draw (void)
 {
     int i;
-    for (i = 0; i < NUM_BALLS; i++)
+    for (i = 0; i < MAX_BALLS; i++)
     {
         if (balls[i].size > 0)
         {
@@ -155,9 +175,9 @@ void balls_draw (void)
             if (draw_hitbox)
             {
                 SDL_SetRenderDrawColor( renderer, 0, 255, 0, 0 );
-                SDL_RenderDrawRect( renderer, &ball_rects[i]);
+                SDL_RenderDrawRect( renderer, &balls[i].rect);
             }
-            SDL_RenderCopyEx (renderer, ball_tex, NULL, &ball_rects[i], balls[i].angle, NULL, 0);
+            SDL_RenderCopyEx (renderer, ball_tex, NULL, &balls[i].rect, balls[i].angle, NULL, 0);
         }
     }
 }

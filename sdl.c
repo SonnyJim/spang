@@ -10,6 +10,9 @@ Mix_Chunk *comboup = NULL;
 Mix_Chunk *combodown = NULL;
 Mix_Music *music = NULL;
 Mix_Chunk *test = NULL;
+Mix_Chunk *tink = NULL;
+
+
 
 void sdl_read_input (void)
 {
@@ -29,7 +32,6 @@ void sdl_read_input (void)
                         running = 0;
                         break;
                     case SDLK_b:
-                        ball_add (5, screen_height / 2, screen_width / 2, player.speed, 1);
                         break;
                     case SDLK_h:
                         if (draw_hitbox)
@@ -53,14 +55,16 @@ void sdl_read_input (void)
                         right = 1;
                         break;
                     case SDLK_SPACE:
-                        if (player.smartbomb)
+                        if (player.smartbomb && !paused)
                             powerup_smartbomb ();
                         break;
                     case SDLK_p:
                         if (paused)
                             paused = 0;
                         else
+                        {
                             paused = 1;
+                        }
                         break;
                 }
                 break;
@@ -140,9 +144,9 @@ int sdl_init (void)
     if (music == NULL)
         fprintf (stderr, "Error loading music\n");
 
-    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 1024 ) == -1 )
+    if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) == -1 )
         return 1;
-    Mix_AllocateChannels (32);
+    Mix_AllocateChannels (16);
     Mix_PlayMusic (music, -1);
     if (TTF_Init () == -1)
     {

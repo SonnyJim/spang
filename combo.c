@@ -62,13 +62,8 @@ void combo_check_level (void)
 void combo_increment (void)
 {
     player.hits++;
-    if (player.hits % 31 == 0)
-    {
-        Mix_PlayChannel (SND_MUSIC, speedup, 0);
-        player.speed += 0.5;
-        balls_speed_change ();
+    player.hits_round++;
 
-    }
     if (player.combo < COMBO_MAX)
         player.combo++;
     combo_check_level ();
@@ -81,4 +76,18 @@ void combo_decrement (void)
     if (player.combo < 0)
         player.combo = 1;
     combo_check_level ();
+}
+
+void combo_hit (int size)
+{
+    if (player.last_size == size)
+    {
+        score_bonus += score_bonus;
+        if (score_bonus > 800)
+            score_bonus = 800;
+    }
+    else
+        score_bonus = 10;
+    player.last_size = size;
+
 }
