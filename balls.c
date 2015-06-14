@@ -1,5 +1,5 @@
 #include "spang.h"
-#include "balls.h"
+
 Mix_Chunk *levelup = NULL;
 
 void balls_speed_change (void)
@@ -35,6 +35,16 @@ void balls_check (void)
             break;
         }
     }
+
+    for (i = 0;i < MAX_ENEMIES; i++)
+    {
+        if (enemies[i].type != ENEMY_NONE)
+        {
+            found = 1;
+            break;
+        }
+    }
+
     if (!found)
     {
         level_up ();
@@ -49,8 +59,8 @@ void ball_add (int size, int xpos, int ypos, int speed, int direction, int stren
         if (balls[i].size == 0)
         {
             balls[i].size = size;
-            balls[i].rect.x = xpos;
-            balls[i].rect.y = ypos;
+            balls[i].rect.x = xpos - (size * 10);
+            balls[i].rect.y = ypos - (size * 10);
             balls[i].strength = strength;
             balls[i].hits = 0;
             if (direction)
@@ -100,12 +110,12 @@ void ball_hit (int ball_num)
         return;
     }
 
-    if (player.hits % 50 == 0)
+    if (player.hits % 100 == 0)
         powerup_add (POWERUP_HEALTH, balls[ball_num].rect.x, balls[ball_num].rect.y);
     size = balls[ball_num].size - 1;
 
-    ball_add (size, balls[ball_num].rect.x - (balls[ball_num].rect.w / 2), balls[ball_num].rect.y, player.speed, 0, balls[ball_num].strength - 1);
-    ball_add (size, balls[ball_num].rect.x + (balls[ball_num].rect.w / 2), balls[ball_num].rect.y, player.speed, 1, balls[ball_num].strength - 1);
+    ball_add (size, balls[ball_num].rect.x + (size /2), balls[ball_num].rect.y + (balls[ball_num].rect.h / 2), player.speed, 0, balls[ball_num].strength - 1);
+    ball_add (size, balls[ball_num].rect.x + balls[ball_num].rect.w - (size/2), balls[ball_num].rect.y + (balls[ball_num].rect.h / 2), player.speed, 1, balls[ball_num].strength - 1);
     //Remove the old ball last so the balls before can inherit the properties
     balls [ball_num].size = 0;
 }
@@ -144,14 +154,18 @@ void balls_init_all (void)
 
 void ball_update (int num)
 {
-    balls[num].rect.x += balls[num].xvel;
-    balls[num].rect.y += balls[num].yvel;
-
     balls[num].angle += balls[num].angle_vel;
     if (balls[num].angle > 360)
         balls[num].angle = 0;
     if (balls[num].angle <= 0)
         balls[num].angle = 360;
+
+    if (level_change_timer)
+        return;
+    balls[num].rect.x += balls[num].xvel;
+    balls[num].rect.y += balls[num].yvel;
+
+
 
     if (balls[num].rect.x <= 0)
         balls[num].xvel = player.speed;
@@ -172,6 +186,8 @@ void balls_draw (void)
         if (balls[i].size > 0)
         {
             ball_update (i);
+            detect_ballhit (balls[i].rect, i);
+
             if (draw_hitbox)
             {
                 SDL_SetRenderDrawColor( renderer, 0, 255, 0, 0 );

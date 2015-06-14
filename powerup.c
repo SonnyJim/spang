@@ -1,10 +1,8 @@
 #include "spang.h"
 #define MAX_POWERUPS 64
-#define POWERUP_DISPLAY_TIME 3000
+#define POWERUP_DISPLAY_TIME 2000
 #define MEGASHOT_TIME 6000
 #define NUM_POWERUPS 4
-
-
 
 Mix_Chunk *health1;
 Mix_Chunk *kaching;
@@ -25,6 +23,13 @@ struct powerup_t powerups[MAX_POWERUPS];
 SDL_Texture *powerups_tex[NUM_POWERUPS];
 const char *powerups_msg[NUM_POWERUPS + 1] = { "NONE", "Shield Up", "1000", "Slowdown", "MEGASHOT"};
 
+void powerups_textures_init (void)
+{
+    powerups_tex[POWERUP_HEALTH] = health_tex;
+    powerups_tex[POWERUP_COIN] = coin_tex;
+    powerups_tex[POWERUP_SLOW] = slow_tex;
+    powerups_tex[POWERUP_MEGASHOT] = megashot_tex;
+}
 void powerups_init (void)
 {
     int i;
@@ -37,13 +42,10 @@ void powerups_init (void)
         powerups[i].rect.x = 0;
         powerups[i].rect.y = 0;
     }
-    powerups_tex[POWERUP_HEALTH] = health_tex;
-    powerups_tex[POWERUP_COIN] = coin_tex;
-    powerups_tex[POWERUP_SLOW] = slow_tex;
-    powerups_tex[POWERUP_MEGASHOT] = megashot_tex;
+    powerups_textures_init ();
 }
 
-void powerup_add (int type, int xpos, int ypos)
+void powerup_add (powerup_t type, int xpos, int ypos)
 {
     //fprintf (stdout, "Adding power up at %li hits\n", player.hits);
     int i;
@@ -51,10 +53,14 @@ void powerup_add (int type, int xpos, int ypos)
     {
         if (powerups[i].type == POWERUP_NONE)
         {
+            if (xpos + powerups[i].rect.w > screen_width)
+                xpos -= powerups[i].rect.w;
             powerups[i].type = type;
-            powerups[i].time = SDL_GetTicks ();
+            powerups[i].time = 0;
             powerups[i].rect.x = xpos;
             powerups[i].rect.y = ypos;
+            powerups[i].rect.w = 48;
+            powerups[i].rect.h = 48;
             return;
         }
     }
@@ -89,6 +95,7 @@ static void powerup_slow (void)
 
 static void powerup_megashot (void)
 {
+    Mix_PlayChannel (-1, siren, 0);
     megashot_timer = SDL_GetTicks ();
     megashot_active = 1 ;
 }
@@ -119,9 +126,19 @@ void powerups_check_collision (int num)
     {
         int type = powerups[num].type;
         msg_show (powerups_msg[type], powerups[num].rect.x + (powerups[num].rect.w / 2),
-                  powerups[num].rect.y - (powerups[num].rect.h / 2), 3, font3, ALIGN_TCENTRE, white);
+                  player.rect.y - powerups[num].rect.w, 2, font3, ALIGN_TCENTRE, white);
         powerup_collect (num);
     }
+}
+void powerups_update (int i)
+{
+    //Move powerup down the screen and start the timer when they hit the bottom
+    if (powerups[i].rect.y + 5 < (screen_height - powerups[i].rect.h))
+        powerups[i].rect.y += 5;
+    else if (powerups[i].time == 0)
+        powerups[i].time = SDL_GetTicks ();
+    else if (powerups[i].time + POWERUP_DISPLAY_TIME - 1000 < SDL_GetTicks ())
+        powerups[i].rect.h -= 1;
 }
 
 void powerups_draw (void)
@@ -132,16 +149,16 @@ void powerups_draw (void)
         if (powerups[i].type != POWERUP_NONE)
         {
 
-            if (powerups[i].time + POWERUP_DISPLAY_TIME < SDL_GetTicks ())
+            if (powerups[i].time != 0 &&
+                powerups[i].time + POWERUP_DISPLAY_TIME < SDL_GetTicks ())
             {
                 powerups[i].type = POWERUP_NONE;
                 break;
             }
             else
             {
+                powerups_update (i);
 
-                if (powerups[i].rect.y < (screen_height - powerups[i].rect.h))
-                    powerups[i].rect.y += 5;
                 SDL_RenderCopy (renderer, powerups_tex[powerups[i].type], NULL, &powerups[i].rect);
                 powerups_check_collision(i);
             }
@@ -163,12 +180,14 @@ void powerups_draw (void)
 void powerup_smartbomb (void)
 {
     int i;
-    msg_show ("BOOOOOM", 0, (screen_height / 2) - 100, 2, font2, ALIGN_CENTRE, red);
+    msg_show ("KABLAMO", 0, (screen_height / 2) - 100, 1, font2, ALIGN_CENTRE, red);
     player.smartbomb = 0;
     for (i = 0; i < MAX_BALLS;i++)
     {
         if (balls[i].size > 0)
         {
+            player.shots_fired_round++;
+            explosion_superbomb (balls[i].rect.x, balls[i].rect.y);
             balls[i].hits = balls[i].strength;
             ball_hit(i);
         }

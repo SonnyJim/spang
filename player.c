@@ -1,9 +1,7 @@
 #include "spang.h"
-SDL_Rect player_rect;
+//SDL_Rect player_rect;
 SDL_Rect player_hitrect1;
 SDL_Rect player_hitrect2;
-
-
 
 Mix_Chunk *alarm;
 
@@ -13,10 +11,10 @@ int invuln_delay = 2 * 60;
 
 void player_init (void)
 {
-    player_rect.w = 50;
-    player_rect.h = 50;
-    player.xpos = screen_width / 2 - (player_rect.w / 2);
-    player.ypos = screen_height - player_rect.h;
+    player.rect.w = 50;
+    player.rect.h = 50;
+    player.rect.x = screen_width / 2 - (player.rect.w / 2);
+    player.rect.y = screen_height - player.rect.h;
     player.bullet_delay = 200;
     player.bullet_max = 5;
     player.bullet_size = 10;
@@ -44,10 +42,10 @@ void player_init (void)
 
 void player_update_hitrect (void)
 {
-        player_hitrect1.x = player_rect.x + 18;
-        player_hitrect1.y = player_rect.y;
-        player_hitrect2.x = player_rect.x;
-        player_hitrect2.y = player_rect.y + 25;
+        player_hitrect1.x = player.rect.x + 18;
+        player_hitrect1.y = player.rect.y;
+        player_hitrect2.x = player.rect.x;
+        player_hitrect2.y = player.rect.y + 25;
 }
 
 void player_score (int size)
@@ -79,7 +77,7 @@ void player_score (int size)
 
 void player_hit (void)
 {
-    Mix_PlayChannel( SND_MUSIC, playerhit, 0 );
+    Mix_PlayChannel( SND_EXPLOSION, playerhit, 0 );
     player.invuln_time = invuln_delay;
     player.health -= 20;
     player.combo /= 2;
@@ -98,14 +96,14 @@ void player_hit (void)
 
 void player_move_left (void)
 {
-    if (player.xpos > 0)
-        player.xpos -= 10;
+    if (player.rect.x > 0)
+        player.rect.x -= 10;
 }
 
 void player_move_right (void)
 {
-    if (player.xpos + player_rect.w < screen_width)
-        player.xpos += 10;
+    if (player.rect.x + player.rect.w < screen_width)
+        player.rect.x += 10;
 }
 void player_ball_destroyed (void)
 {
@@ -119,12 +117,27 @@ void player_ball_destroyed (void)
     }
 }
 
+void player_trippy_hit (void)
+{
+    player.trippy_time = SDL_GetTicks();
+}
+void player_trippy_level_inc (void)
+{
+    if (player.trippy_level < 5)
+        player.trippy_level++;
+}
 
+void player_trippy_calc (void)
+{
+    if (SDL_GetTicks () > player.trippy_time + (2 * 60) && player.trippy_level > 0)
+    {
+        player.trippy_level--;
+    }
+}
 
 void player_draw (void)
 {
-    player_rect.x = player.xpos;
-    player_rect.y = player.ypos;
+    player_trippy_calc ();
     player_update_hitrect ();
     if (draw_hitbox)
     {
@@ -139,5 +152,6 @@ void player_draw (void)
             return;
 
     }
-    SDL_RenderCopy (renderer, ship_tex, NULL, &player_rect);
+    SDL_RenderCopy (renderer, ship_tex, NULL, &player.rect);
 }
+

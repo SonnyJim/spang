@@ -1,7 +1,7 @@
 #include "spang.h"
 
 #define NUM_TEXTURE_PACKS 3
-#define NUM_TEXTURES 8
+#define NUM_TEXTURES 9
 
 SDL_Texture *ball_tex = NULL;
 SDL_Texture *bullet_tex = NULL;
@@ -12,6 +12,19 @@ SDL_Texture *health_tex = NULL;
 SDL_Texture *coin_tex = NULL;
 SDL_Texture *slow_tex = NULL;
 SDL_Texture *megashot_tex = NULL;
+
+SDL_Texture *enemy_tex = NULL;
+
+Mix_Chunk *laser1 = NULL;
+Mix_Chunk *explosion = NULL;
+Mix_Chunk *playerhit = NULL;
+Mix_Chunk *death = NULL;
+Mix_Chunk *comboup = NULL;
+Mix_Chunk *combodown = NULL;
+Mix_Chunk *test = NULL;
+Mix_Chunk *tink = NULL;
+Mix_Chunk *siren = NULL;
+
 
 int texture_error = 0;
 
@@ -25,6 +38,7 @@ struct texture_pack
     char *coin;
     char *slow;
     char *megashot;
+    char *enemy;
 };
 
 struct texture_pack texture_default =
@@ -36,7 +50,8 @@ struct texture_pack texture_default =
     .health = "data/gfx/default/health.png",
     .coin = "data/gfx/default/coin.png",
     .slow = "data/gfx/default/slow.png",
-    .megashot = "data/gfx/default/megashot.png"
+    .megashot = "data/gfx/default/megashot.png",
+    .enemy = "data/gfx/default/enemy.png"
 };
 
 struct texture_pack texture_bublbobl =
@@ -48,7 +63,9 @@ struct texture_pack texture_bublbobl =
     .health = "data/gfx/bublbobl/health.png",
     .coin = "data/gfx/bublbobl/coin.png",
     .slow = "data/gfx/bublbobl/slow.png",
-    .megashot = "data/gfx/bublbobl/megashot.png"
+    .megashot = "data/gfx/bublbobl/megashot.png",
+    .enemy = "data/gfx/default/enemy.png"
+
 };
 
 struct texture_pack texture_pacman =
@@ -60,7 +77,9 @@ struct texture_pack texture_pacman =
     .health = "data/gfx/pacman/health.png",
     .coin = "data/gfx/pacman/coin.png",
     .slow = "data/gfx/pacman/slow.png",
-    .megashot = "data/gfx/pacman/megashot.png"
+    .megashot = "data/gfx/pacman/megashot.png",
+    .enemy = "data/gfx/default/enemy.png"
+
 };
 
 struct texture_pack texture_packs[NUM_TEXTURE_PACKS];
@@ -102,6 +121,10 @@ int textures_load (int num)
     coin_tex = texture_load_img (texture_packs[num].coin);
     slow_tex = texture_load_img (texture_packs[num].slow);
     megashot_tex = texture_load_img (texture_packs[num].megashot);
+    enemy_tex = texture_load_img (texture_packs[num].enemy);
+
+    //Need to call this to update the pointers to powerup textures
+    powerups_textures_init ();
 
     if (texture_error)
         fprintf (stderr, "Error:  The was an error creating the textures!\n");
@@ -122,7 +145,7 @@ int textures_init (void)
     textures[5] = coin_tex;
     textures[6] = slow_tex;
     textures[7] = megashot_tex;
-
+    textures[8] = enemy_tex;
     return textures_load (0);
 }
 
@@ -169,6 +192,9 @@ int audio_init (void)
         return 1;
     tink = Mix_LoadWAV ("data/sfx/tink.wav");
     if (tink == NULL)
+        return 1;
+    siren = Mix_LoadWAV ("data/sfx/siren.wav");
+    if (siren == NULL)
         return 1;
     return 0;
 }

@@ -4,11 +4,17 @@ Mix_Chunk *speedup = NULL;
 
 void combo_set_level (int level)
 {
+    if (player.combo_level > level && player.combo_time + 500 > SDL_GetTicks ())
+    {
+        return;
+    }
+    player.combo_time = SDL_GetTicks ();
     if (level > player.combo_level)
         Mix_PlayChannel (SND_COMBO, comboup, 0);
     else if (level != player.combo_level)
         Mix_PlayChannel (SND_COMBO, combodown, 0);
     player.combo_level = level;
+
     switch (level)
     {
         case 0:
@@ -66,6 +72,9 @@ void combo_increment (void)
 
     if (player.combo < COMBO_MAX)
         player.combo++;
+
+    if (player.combo % 10 == 0)
+        player_trippy_level_inc ();
     combo_check_level ();
 }
 

@@ -103,7 +103,6 @@ static void render_string_right (char *msg, int ypos, SDL_Color colour, TTF_Font
     SDL_RenderCopy (renderer, score_tex, NULL, &score_rect);
     SDL_DestroyTexture (score_tex);
     SDL_FreeSurface (score_srf);
-
 }
 
 int render_score (void)
@@ -144,7 +143,7 @@ void msg_init (void)
         msgs[i].start_time = 0;
         msgs[i].show_time = 0;
         msgs[i].rect.x = 0;
-        msgs[i].rect.y = 0;;
+        msgs[i].rect.y = 0;
         msgs[i].font = NULL;
         msgs[i].active = 0;
         strcpy (msgs[i].text, "");
@@ -168,6 +167,8 @@ void msg_show (char *msg, int xpos, int ypos, int time, TTF_Font *font, align_t 
             msgs[i].align = align;
             msgs[i].colour = colour;
             sprintf (msgs[i].text, "%s", msg);
+            TTF_SizeText (msgs[i].font, msgs[i].text, &msgs[i].rect.w, &msgs[i].rect.h);
+
             return;
         }
     }
@@ -196,7 +197,20 @@ static void msg_draw_aligned (int i)
         case ALIGN_TCENTRE:
             render_string_tcentre (msgs[i].text, msgs[i].rect.x, msgs[i].rect.y, msgs[i].colour, msgs[i].font);
     }
-    SDL_RenderCopy (renderer, score_tex, NULL, &score_rect);
+}
+
+static void msg_check_overlap (int num)
+{
+    int i;
+
+    for (i = 0; i < NUM_MSGS; i++)
+    {
+        if (msgs[i].active && i != num)
+        {
+            if (check_axis (msgs[i].rect, msgs[num].rect))
+                msgs[num].rect.y -= msgs[i].rect.h;
+        }
+    }
 }
 
 void msg_draw (void)
@@ -208,6 +222,7 @@ void msg_draw (void)
         {
             if (msgs[i].start_time + (msgs[i].show_time * 1000) > SDL_GetTicks ())
             {
+                msg_check_overlap (i);
                 msg_draw_aligned (i);
             }
             else

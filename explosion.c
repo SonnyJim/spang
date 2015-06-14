@@ -36,6 +36,34 @@ void explosions_init (void)
     }
 }
 
+void explosion_superbomb (int xpos, int ypos)
+{
+    int i, j;
+    for (i = 0; i < 5; i++)
+    {
+        for (j = 0; j < 5; j++)
+        {
+            if (explosions[i][j].active == 0)
+            {
+                explosions[i][j].particle_rect.x = xpos;
+                explosions[i][j].particle_rect.y = ypos;
+
+                explosions[i][j].xvel = (rand() %40) - 20;
+                explosions[i][j].yvel = (rand() % 10) - 10;
+                explosions[i][j].colour.r = (rand () % 255);
+                explosions[i][j].colour.g = (rand () % 255);
+                explosions[i][j].colour.b = (rand () % 255);
+
+                explosions[i][j].active = 1;
+
+                explosions[i][j].particle_rect.w = (rand () % (40)) + 20;
+                //explosions[i][j].colour = { rand() % 255, rand() % 255, rand() % 255};
+                //return;
+            }
+        }
+    }
+}
+
 void explosion_add (int xpos, int ypos)
 {
     int i, j;

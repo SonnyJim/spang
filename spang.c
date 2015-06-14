@@ -12,72 +12,6 @@ SDL_Renderer *renderer;
 int running;
 int draw_hitbox = 0;
 
-int check_axis (SDL_Rect a, SDL_Rect b)
-{
-     int leftA, leftB;
-     int rightA, rightB;
-     int topA, topB;
-     int bottomA, bottomB;
-
-     leftA = a.x;
-     rightA = a.x + a.w;
-     topA = a.y;
-     bottomA = a.y + a.h;
-
-     leftB = b.x;
-     rightB = b.x + b.w;
-     topB = b.y;
-     bottomB = b.y + b.h;
-
-     if( bottomA <= topB || topA >= bottomB || rightA <= leftB ||leftA >= rightB )
-        return 0;
-     else
-        return 1;
-}
-
-void detect_playerhit (void)
-{
-    int i;
-    for (i = 0; i < MAX_BALLS; i++)
-    {
-        if (balls[i].size > 0)
-        {
-            if (check_axis (balls[i].rect, player_hitrect1) ||
-                check_axis (balls[i].rect, player_hitrect2))
-            {
-                if (player.invuln_time)
-                    return;
-
-                explosion_add (player.xpos + (player_rect.w / 2), player.ypos + (player_rect.h / 2) );
-                //paused = 1;
-                player_hit ();
-                if (balls[i].size == 1)
-                {
-                    ball_hit (i);
-                }
-
-            }
-        }
-    }
-}
-
-void detect_collision (int num)
-{
-    int i;
-    for (i = 0; i < MAX_BALLS; i++)
-    {
-        if (balls[i].size > 0)
-        {
-            if (check_axis (bullet_rects[num], balls[i].rect))
-            {
-                bullet_remove (num);
-                ball_hit (i);
-                return;
-            }
-        }
-    }
-}
-
 
 int main (int argc, char *argv[])
 {
@@ -99,6 +33,7 @@ int main (int argc, char *argv[])
     powerups_init ();
     explosions_init ();
     msg_init ();
+    stars_init ();
 
     running = 1;
     while (running)
@@ -110,18 +45,20 @@ int main (int argc, char *argv[])
         balls_check ();
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
         SDL_RenderClear (renderer);
-        SDL_RenderCopy (renderer, bg_tex, NULL, NULL);
-
+        //SDL_RenderCopy (renderer, bg_tex, NULL, NULL);
+        stars_draw ();
         player_draw ();
-        explosions_draw ();
         balls_draw ();
+        enemy_draw ();
         bullets_draw ();
 
         powerups_draw ();
+        explosions_draw ();
 
-        detect_playerhit ();
+        //detect_playerhit();
         render_score ();
         msg_draw ();
+        level_change_pause ();
         }
         SDL_RenderPresent (renderer);
     }

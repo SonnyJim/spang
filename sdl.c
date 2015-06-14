@@ -2,17 +2,7 @@
 int fire, left, right = 0;
 extern int running;
 
-Mix_Chunk *laser1 = NULL;
-Mix_Chunk *explosion = NULL;
-Mix_Chunk *playerhit = NULL;
-Mix_Chunk *death = NULL;
-Mix_Chunk *comboup = NULL;
-Mix_Chunk *combodown = NULL;
 Mix_Music *music = NULL;
-Mix_Chunk *test = NULL;
-Mix_Chunk *tink = NULL;
-
-
 
 void sdl_read_input (void)
 {
@@ -40,10 +30,10 @@ void sdl_read_input (void)
                             draw_hitbox = 1;
                         break;
                     case SDLK_m:
-                        if ( Mix_PausedMusic())
-                            Mix_ResumeMusic();
+                        if ( Mix_VolumeMusic(-1) == 0)
+                            Mix_VolumeMusic (128);
                         else
-                            Mix_PauseMusic();
+                            Mix_VolumeMusic(0);
                         break;
                     case SDLK_LCTRL:
                         fire = 1;
@@ -133,14 +123,15 @@ int sdl_init (void)
         return 1;
     }
 
-    int flags = MIX_INIT_OGG|MIX_INIT_MOD;
+    int flags = MIX_INIT_OGG|MIX_INIT_MOD|MIX_INIT_OGG;
     int initted = Mix_Init (flags);
     if ((initted&flags) != flags)
     {
         fprintf (stderr, "Mix_Init: Failed to init required ogg and mod support!\n");
         fprintf (stderr, "Mix_Init: %s\n", Mix_GetError());
     }
-    music = Mix_LoadMUS( "data/sfx/cyberrid.mod" );
+    //music = Mix_LoadMUS( "data/sfx/cyberrid.mod" );
+    music = Mix_LoadMUS ("data/sfx/music/t2k1.mod");
     if (music == NULL)
         fprintf (stderr, "Error loading music\n");
 
