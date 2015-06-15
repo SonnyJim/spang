@@ -25,6 +25,13 @@ Mix_Chunk *test = NULL;
 Mix_Chunk *tink = NULL;
 Mix_Chunk *siren = NULL;
 
+Mix_Chunk *snd_barrel = NULL;
+
+Mix_Music *music[NUM_MUSIC];
+
+TTF_Font *font1 = NULL;
+TTF_Font *font2 = NULL;
+TTF_Font *font3 = NULL;
 
 int texture_error = 0;
 
@@ -123,6 +130,8 @@ int textures_load (int num)
     megashot_tex = texture_load_img (texture_packs[num].megashot);
     enemy_tex = texture_load_img (texture_packs[num].enemy);
 
+    bonus_tex = texture_load_img ("data/gfx/default/barrel.png");
+
     //Need to call this to update the pointers to powerup textures
     powerups_textures_init ();
 
@@ -147,6 +156,49 @@ int textures_init (void)
     textures[7] = megashot_tex;
     textures[8] = enemy_tex;
     return textures_load (0);
+}
+
+int fonts_init (void)
+{
+    font1 = TTF_OpenFont( "data/fonts/8bitwonder.ttf", 20 );
+    font2 = TTF_OpenFont( "data/fonts/8bitwonder.ttf", 40 );
+    font3 = TTF_OpenFont( "data/fonts/8bitwonder.ttf", 12 );
+    if (font1 == NULL)
+    {
+        fprintf (stderr, "Error loading font1\n");
+        return 1;
+    }
+    //score_rect.x = 0;
+    //score_rect.y = 0;
+    return 0;
+}
+
+static int music_load (char *file, music_t num)
+{
+    if (num > NUM_MUSIC)
+    {
+        fprintf (stderr, "Error: music_load out of range %i\n", num);
+        return 1;
+    }
+    music[num] = NULL;
+    music[num] = Mix_LoadMUS (file);
+    if (music[num] == NULL)
+    {
+        fprintf (stderr, "Error: Mix_LoadMUS error %s\n", Mix_GetError ());
+        return 1;
+    }
+    return 0;
+}
+
+int music_init (void)
+{
+    int ret;
+    ret = music_load ("data/sfx/music/t2kremix.mod", MUSIC_T2K);
+    ret = music_load ("data/sfx/music/bubble_bobble_tribute.xm", MUSIC_BUBBLEBOBBLE);
+    ret = music_load ("data/sfx/music/cyberrid.mod", MUSIC_CYBERRID);
+    ret = music_load ("data/sfx/music/pacman.mod", MUSIC_PACMAN);
+
+    return ret;
 }
 
 int audio_init (void)
@@ -195,6 +247,9 @@ int audio_init (void)
         return 1;
     siren = Mix_LoadWAV ("data/sfx/siren.wav");
     if (siren == NULL)
+        return 1;
+    snd_barrel = Mix_LoadWAV ("data/sfx/barrel.wav");
+    if (snd_barrel == NULL)
         return 1;
     return 0;
 }

@@ -4,7 +4,7 @@ Mix_Chunk *speedup = NULL;
 
 void combo_set_level (int level)
 {
-    if (player.combo_level > level && player.combo_time + 500 > SDL_GetTicks ())
+    if (!bonus_level_active && player.combo_level > level && player.combo_time + 500 > SDL_GetTicks ())
     {
         return;
     }
@@ -80,6 +80,8 @@ void combo_increment (void)
 
 void combo_decrement (void)
 {
+    if (bonus_level_active)
+        return;
     score_bonus = 10;
     player.combo -= 2;
     if (player.combo < 0)

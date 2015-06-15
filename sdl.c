@@ -1,8 +1,68 @@
 #include "spang.h"
-int fire, left, right = 0;
+int fire, left, right, smartbomb = 0;
 extern int running;
 
-Mix_Music *music = NULL;
+static void input_read_left (void)
+{
+    switch (gamestate)
+    {
+        case GAME_RUNNING:
+            if (!paused)
+                player_move_left ();
+            break;
+        case GAME_HSENTRY:
+            hsentry_left ();
+            break;
+        default:
+            break;
+    }
+}
+
+static void input_read_right (void)
+{
+    switch (gamestate)
+    {
+        case GAME_RUNNING:
+            if (!paused)
+                player_move_right ();
+            break;
+        case GAME_HSENTRY:
+            hsentry_right ();
+            break;
+        default:
+            break;
+    }
+}
+
+static void input_read_fire (void)
+{
+    switch (gamestate)
+    {
+        case GAME_RUNNING:
+            if (!paused)
+                bullet_add ();
+            break;
+        case GAME_AMODE:
+            amode_fire ();
+            break;
+        case GAME_HSENTRY:
+            hsentry_fire ();
+            break;
+        default:
+            break;
+    }
+}
+
+static void input_read_smartbomb (void)
+{
+   switch (gamestate)
+    {
+        case GAME_RUNNING:
+            if (!paused)
+                powerup_smartbomb ();
+            break;
+    }
+}
 
 void sdl_read_input (void)
 {
@@ -45,16 +105,15 @@ void sdl_read_input (void)
                         right = 1;
                         break;
                     case SDLK_SPACE:
-                        if (player.smartbomb && !paused)
-                            powerup_smartbomb ();
+                        smartbomb = 1;
                         break;
                     case SDLK_p:
                         if (paused)
-                            paused = 0;
+                            game_unpause ();
                         else
-                        {
-                            paused = 1;
-                        }
+                            game_pause ();
+                        break;
+                    default:
                         break;
                 }
                 break;
@@ -70,18 +129,23 @@ void sdl_read_input (void)
                     case SDLK_RIGHT:
                         right = 0;
                         break;
+                    case SDLK_SPACE:
+                        smartbomb = 0;
+                        break;
+                    default:
+                        break;
                 }
                 break;
         }
     }
-    if (paused)
-        return;
     if (fire)
-        bullet_add ();
+        input_read_fire ();
+    if (smartbomb)
+        input_read_smartbomb ();
     if (left && !right)
-        player_move_left ();
+        input_read_left ();
     else if (right && !left)
-        player_move_right ();
+        input_read_right ();
 }
 
 int sdl_init (void)
@@ -131,18 +195,14 @@ int sdl_init (void)
         fprintf (stderr, "Mix_Init: %s\n", Mix_GetError());
     }
     //music = Mix_LoadMUS( "data/sfx/cyberrid.mod" );
-    music = Mix_LoadMUS ("data/sfx/music/t2k1.mod");
-    if (music == NULL)
-        fprintf (stderr, "Error loading music\n");
 
     if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) == -1 )
         return 1;
     Mix_AllocateChannels (16);
-    Mix_PlayMusic (music, -1);
     if (TTF_Init () == -1)
     {
         fprintf (stderr, "Error setting up font system\n");
         return 1;
     }
-    return fonts_load ();
+    return fonts_init ();
 }

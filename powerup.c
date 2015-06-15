@@ -95,7 +95,7 @@ static void powerup_slow (void)
 
 static void powerup_megashot (void)
 {
-    Mix_PlayChannel (-1, siren, 0);
+    Mix_PlayChannel (SND_SIREN, siren, 0);
     megashot_timer = SDL_GetTicks ();
     megashot_active = 1 ;
 }
@@ -125,8 +125,8 @@ void powerups_check_collision (int num)
     if (check_axis (powerups[num].rect, player_hitrect2))
     {
         int type = powerups[num].type;
-        msg_show (powerups_msg[type], powerups[num].rect.x + (powerups[num].rect.w / 2),
-                  player.rect.y - powerups[num].rect.w, 2, font3, ALIGN_TCENTRE, white);
+        msg_show ((char *) powerups_msg[type], powerups[num].rect.x + (powerups[num].rect.w / 2),
+                    player.rect.y - powerups[num].rect.w, 2, font3, ALIGN_TCENTRE, white);
         powerup_collect (num);
     }
 }
@@ -180,6 +180,8 @@ void powerups_draw (void)
 void powerup_smartbomb (void)
 {
     int i;
+    if (player.smartbomb == 0)
+        return;
     msg_show ("KABLAMO", 0, (screen_height / 2) - 100, 1, font2, ALIGN_CENTRE, red);
     player.smartbomb = 0;
     for (i = 0; i < MAX_BALLS;i++)
@@ -190,6 +192,16 @@ void powerup_smartbomb (void)
             explosion_superbomb (balls[i].rect.x, balls[i].rect.y);
             balls[i].hits = balls[i].strength;
             ball_hit(i);
+        }
+    }
+
+    for (i = 0; i < MAX_ENEMIES; i++)
+    {
+        if (enemies[i].type != ENEMY_NONE)
+        {
+            player.shots_fired_round++;
+            enemies[i].hits = enemies[i].strength;
+            enemy_hit (i);
         }
     }
     if (player.speed > 1)

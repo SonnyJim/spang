@@ -9,7 +9,7 @@ void player_trippy_level_inc (void);
 
 void player_ball_destroyed (void);
 
-struct player
+struct player_t
 {
     SDL_Rect rect;
     int lives;
@@ -34,6 +34,7 @@ struct player
     int smartbomb;
     long destroyed_balls;
     int invuln_time;
+    int bonus_level;
 };
 
-struct player player;
+struct player_t player;

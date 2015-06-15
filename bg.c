@@ -3,7 +3,7 @@
 #define NUMBER_OF_STARS 1020
 Uint16 centerx;
 Uint16 centery;
-extern int left, right;
+int init = 0;
 
 /*star struct*/
 typedef struct
@@ -51,38 +51,27 @@ void init_star(star_s* star, int i)
   }
 }
 
-void stars_init (void)
+static void stars_init (void)
 {
-  int i;
-  centerx = screen_width /2;
-  centery = screen_height /2;
+    int i;
+    centerx = screen_width /2;
+    centery = screen_height /2;
 
-  //SDL_Color colors[256];
-
-  /* create and set palette */
-/*
-  colors[0].r = 0;
-  colors[0].g = 0;
-  colors[0].b = 0;
-
-  for (i = 0; i < 255; ++i)
+    for (i = 0; i < NUMBER_OF_STARS; i++)
     {
-      colors[255 - i].r = i;
-      colors[255 - i].g = i;
-      colors[255 - i].b = i;
-    }
-*/
-//  SDL_SetPalette(screen, SDL_LOGPAL | SDL_PHYSPAL, colors, 0, 256);
-
-  for (i = 0; i < NUMBER_OF_STARS; i++)
-    {
-      init_star(stars + i, i + 1);
+        init_star(stars + i, i + 1);
     }
 }
 
 void stars_draw (void)
 {
     int i, tempx, tempy;
+
+    if (!init)
+    {
+        stars_init ();
+        init = 1;
+    }
 
     for (i = 0; i < NUMBER_OF_STARS; i++)
 	{

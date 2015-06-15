@@ -38,28 +38,6 @@ int check_axis (SDL_Rect a, SDL_Rect b)
      else
         return 1;
 }
-/*
-static void detect_ballhit (void)
-{
-    int i;
-    for (i = 0; i < MAX_BALLS; i++)
-    {
-        if (balls[i].size > 0)
-        {
-            if (check_axis (balls[i].rect, player_hitrect1) ||
-                check_axis (balls[i].rect, player_hitrect2))
-            {
-                if (player.invuln_time)
-                    return;
-
-
-                return;
-
-            }
-        }
-    }
-}
-*/
 
 static void player_was_hit_by_ball (int i)
 {
@@ -67,10 +45,12 @@ static void player_was_hit_by_ball (int i)
         ball_hit (i);
 }
 
+/*
 static void player_was_hit_by_bullet (int i)
 {
     enemy_bullet_remove (i);
 }
+*/
 
 static void detect_playerhit (void (*function)(int), SDL_Rect rect, int object_num)
 {
@@ -84,6 +64,11 @@ static void detect_playerhit (void (*function)(int), SDL_Rect rect, int object_n
     }
 }
 
+void detect_enemyhit (SDL_Rect rect, int enemy)
+{
+    detect_playerhit (enemy_remove, rect, enemy);
+}
+
 //Check if something hit the player
 void detect_ballhit (SDL_Rect rect, int ball)
 {
@@ -92,13 +77,27 @@ void detect_ballhit (SDL_Rect rect, int ball)
 
 void detect_enemy_bullet (SDL_Rect rect, int bullet)
 {
-    detect_playerhit (player_was_hit_by_bullet, rect, bullet);
+    detect_playerhit (enemy_bullet_remove, rect, bullet);
 }
 
-//For player to rock/enemy
+//Detect if a bullet has hit a rock/enemy/barrel
 void detect_bullet (int num)
 {
     int i;
+
+    if (bonus_level_active)
+    {
+        for (i = 0; i < BONUS_BARRELS; i++)
+        {
+            if (barrels[i].active && check_axis (bullets[num].rect, barrels[i].rect))
+            {
+                bullet_remove (num);
+                bonus_barrel_hit (&barrels[i], &bullets[num]);
+                break;
+            }
+        }
+        return;
+    }
 
     for (i = 0; i < MAX_BALLS; i++)
     {
@@ -126,5 +125,3 @@ void detect_bullet (int num)
         }
     }
 }
-
-

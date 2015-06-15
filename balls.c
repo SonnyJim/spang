@@ -47,7 +47,7 @@ void balls_check (void)
 
     if (!found)
     {
-        level_up ();
+        level_end ();
     }
 }
 
@@ -157,7 +157,7 @@ void ball_update (int num)
     balls[num].angle += balls[num].angle_vel;
     if (balls[num].angle > 360)
         balls[num].angle = 0;
-    if (balls[num].angle <= 0)
+    else if (balls[num].angle <= 0)
         balls[num].angle = 360;
 
     if (level_change_timer)
@@ -169,12 +169,12 @@ void ball_update (int num)
 
     if (balls[num].rect.x <= 0)
         balls[num].xvel = player.speed;
-    if (balls[num].rect.x + balls[num].rect.w >= screen_width)
+    else if (balls[num].rect.x + balls[num].rect.w >= screen_width)
         balls[num].xvel = -player.speed;
 
     if (balls[num].rect.y + balls[num].rect.h >= screen_height)
         balls[num].yvel = -player.speed;
-    if (balls[num].rect.y <= 0)
+    else if (balls[num].rect.y <= 0)
         balls[num].yvel = player.speed;
 }
 

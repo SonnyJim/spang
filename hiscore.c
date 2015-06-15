@@ -1,8 +1,19 @@
 #include "spang.h"
-#define HISCORE_FILE "spang.hi"
-long hiscore = 0;
+int hiscore_position;
 
-int hiscore_load (void)
+void hiscore_draw (void)
+{
+    int i;
+    char buffer[128] = "";
+    for (i = 0; i < NUM_HISCORES; i++)
+    {
+        render_string (hiscores[i].initials, (screen_width / 2) - 100, 100 + (i * 30), green, font1);
+        sprintf (buffer, "%ld", hiscores[i].score);
+        render_string (buffer, (screen_width / 2) + 25, 100 + (i * 30), green, font1);
+    }
+}
+
+static int hiscore_load (void)
 {
     FILE *fp;
 
@@ -12,7 +23,7 @@ int hiscore_load (void)
         fprintf (stderr, "Error opening hiscore file\n");
         return 1;
     }
-    fread (&hiscore, sizeof(hiscore), 1, fp);
+    fread (&hiscores, sizeof(hiscores), 1, fp);
     fclose (fp);
     return 0;
 }
@@ -26,17 +37,48 @@ int hiscore_save (void)
         fprintf (stderr, "Error saving hiscore file\n");
         return 1;
     }
-    fwrite (&hiscore, sizeof(hiscore), 1, fp);
+    fwrite (&hiscores, sizeof(hiscores), 1, fp);
     fclose (fp);
     return 0;
 }
 
+static void hiscore_reset (void)
+{
+    int i;
+    for (i = 0; i < NUM_HISCORES; i++)
+    {
+        strcpy (hiscores[i].initials, "FEK");
+        hiscores[i].score = 10000;
+    }
+}
+
+int hiscore_add (void)
+{
+    int i, j;
+    for (i = 0; i < NUM_HISCORES; i++)
+    {
+        if (player.score > hiscores[i].score)
+        {
+            for (j = NUM_HISCORES; j > i; j--)
+            {
+                hiscores[j].score = hiscores[j - 1].score;
+                strcpy (hiscores[j].initials, hiscores[j-1].initials);
+            }
+            hiscores[i].score = player.score;
+            return i;
+        }
+    }
+    fprintf (stderr, "Error: hiscore_add got to the end before adding a score?\n");
+    return NUM_HISCORES + 1;
+}
+
 int hiscore_check (void)
 {
-    if (player.score > hiscore)
+    int i;
+    for (i = 0; i < NUM_HISCORES; i++)
     {
-        hiscore = player.score;
-        return 1;
+        if (player.score > hiscores[i].score)
+            return 1;
     }
     return 0;
 }
@@ -46,7 +88,7 @@ void hiscore_init (void)
     if (hiscore_load ())
     {
         fprintf (stderr, "Error opening hiscore file, creating a blank one\n");
+        hiscore_reset ();
         hiscore_save ();
     }
-    fprintf (stdout, "hiscore: %ld\n", hiscore);
 }

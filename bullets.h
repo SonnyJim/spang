@@ -1,6 +1,6 @@
 #define MAX_BULLETS 100
 
-struct bullet
+struct bullet_t
 {
     SDL_Rect rect;
     float xvel;
@@ -8,7 +8,7 @@ struct bullet
     int size;
 };
 
-struct bullet bullets[MAX_BULLETS];
+struct bullet_t bullets[MAX_BULLETS];
 
 void bullets_init (void);
 void bullets_draw (void);

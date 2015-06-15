@@ -29,6 +29,8 @@ void player_init (void)
     player.level = 0;
     player.stage_time = 0;
     player.last_size = 0;
+    player.score = 0;
+    score_bonus = 10;
 
     player_hitrect1.w = 14;
     player_hitrect1.h = 25;
@@ -38,6 +40,8 @@ void player_init (void)
 
     player.destroyed_balls = 0;
     player.invuln_time = 0;
+
+    player.bonus_level = 0;
 }
 
 void player_update_hitrect (void)
@@ -72,7 +76,7 @@ void player_score (int size)
     player.score += score_bonus;
     if (score_bonus == 800)
         powerup_add (POWERUP_COIN, rand () % screen_width, 0);
-    hiscore_check ();
+
 }
 
 void player_hit (void)
@@ -82,16 +86,14 @@ void player_hit (void)
     player.health -= 20;
     player.combo /= 2;
     if (player.health <= 0)
-        running = 0;
+    {
+        player.health = 0;
+        gamestate = GAME_OVER;
+    }
     else if (player.health <= 20)
     {
-        //Mix_PauseMusic();
         Mix_PlayChannel (SND_MUSIC, alarm, 0);
     }
-    /*
-    else if (player.health > 20 && !megashot_active)
-        Mix_ResumeMusic();
-        */
 }
 
 void player_move_left (void)

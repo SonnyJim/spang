@@ -2,9 +2,6 @@
 #include <string.h>
 
 #define NUM_MSGS 32
-TTF_Font *font1 = NULL;
-TTF_Font *font2 = NULL;
-TTF_Font *font3 = NULL;
 
 SDL_Color red = {255, 0, 0};
 SDL_Color green = {0, 255, 0};
@@ -38,23 +35,8 @@ SDL_Rect level_rect;
 
 int TextWidth, TextHeight = 0;
 
-int fonts_load (void)
-{
-    font1 = TTF_OpenFont( "data/fonts/8bitwonder.ttf", 20 );
-    font2 = TTF_OpenFont( "data/fonts/8bitwonder.ttf", 40 );
-    font3 = TTF_OpenFont( "data/fonts/8bitwonder.ttf", 12 );
-    if (font1 == NULL)
-    {
-        fprintf (stderr, "Error loading font1\n");
-        return 1;
-    }
-    score_rect.x = 0;
-    score_rect.y = 0;
-    return 0;
-}
 
-
-static void render_string (char *msg, int xpos, int ypos, SDL_Color colour, TTF_Font *font)
+void render_string (char *msg, int xpos, int ypos, SDL_Color colour, TTF_Font *font)
 {
     score_srf = TTF_RenderText_Blended ( font, msg, colour);
     score_tex = SDL_CreateTextureFromSurface (renderer, score_srf);
@@ -79,7 +61,8 @@ static void render_string_tcentre (char *msg, int xpos, int ypos, SDL_Color colo
     SDL_FreeSurface (score_srf);
     SDL_DestroyTexture (score_tex);
 }
-static void render_string_centre (char *msg, int ypos, SDL_Color colour, TTF_Font *font)
+
+void render_string_centre (char *msg, int ypos, SDL_Color colour, TTF_Font *font)
 {
     score_srf = TTF_RenderText_Blended ( font, msg, colour);
     score_tex = SDL_CreateTextureFromSurface (renderer, score_srf);

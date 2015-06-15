@@ -63,10 +63,10 @@ void bullet_update (int num)
 
     if (bullets[num].rect.x <= 0 || bullets[num].rect.x + bullets[num].rect.w >= screen_width ||
         bullets[num].rect.y <= 0 || bullets[num].rect.y + bullets[num].rect.h >= screen_height)
-        {
-            combo_decrement ();
-            bullet_remove(num);
-        }
+    {
+        combo_decrement ();
+        bullet_remove(num);
+    }
 
     detect_bullet (num);
 }
