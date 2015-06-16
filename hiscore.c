@@ -5,11 +5,17 @@ void hiscore_draw (void)
 {
     int i;
     char buffer[128] = "";
+    SDL_Color color;
+
     for (i = 0; i < NUM_HISCORES; i++)
     {
-        render_string (hiscores[i].initials, (screen_width / 2) - 100, 100 + (i * 30), green, font1);
+        if (gamestate == GAME_HSENTRY && i == hiscore_position)
+            color = red;
+        else
+            color = green;
+        render_string (hiscores[i].initials, (screen_width / 2) - 120, 100 + (i * 30), color, font1);
         sprintf (buffer, "%ld", hiscores[i].score);
-        render_string (buffer, (screen_width / 2) + 25, 100 + (i * 30), green, font1);
+        render_string (buffer, (screen_width / 2) + 10, 100 + (i * 30), color, font1);
     }
 }
 

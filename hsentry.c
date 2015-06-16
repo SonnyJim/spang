@@ -1,6 +1,6 @@
 #include "spang.h"
 
-const char *hsentry_letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ ";
+const char *hsentry_letters = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 Uint32 hsentry_repeat;
 
@@ -38,6 +38,7 @@ void hsentry_fire (void)
         hsentry_initted = 0;
         gamestate = GAME_AMODE;
     }
+    hsentry_update_letter();
 }
 
 void hsentry_right (void)
@@ -69,7 +70,7 @@ static void hsentry_init (void)
     hsentry_repeat = 0;
     hsentry_index = 0;
     hsentry_letter = 0;
-    strcpy (hiscores[hiscore_position].initials, "AAA");
+    strcpy (hiscores[hiscore_position].initials, "   ");
     hsentry_initted = 1;
 }
 

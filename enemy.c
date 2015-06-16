@@ -228,6 +228,9 @@ static void enemy_bresenhem_homing (SDL_Rect *start, int xvel, int yvel, bullet_
     if (yvel == 0)
         yvel = 1;
 
+    xvel *= player.speed;
+    yvel *= player.speed;
+
     e2 = err;
     if (e2 > -dx)
     {
@@ -362,8 +365,8 @@ static void enemy_draw_bullets (void)
     {
         if (enemy_bullets[i].type != BULLET_NONE)
         {
-            SDL_SetRenderDrawColor (renderer, 255,0,0,0);
-            SDL_RenderDrawRect (renderer, &enemy_bullets[i].rect);
+            SDL_SetRenderDrawColor (renderer, 255,255,255,0);
+            SDL_RenderFillRect (renderer, &enemy_bullets[i].rect);
         }
     }
 }

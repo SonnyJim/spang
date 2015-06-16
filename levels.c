@@ -78,19 +78,19 @@ void level_eleven (void)
 
 void level_twelve (void)
 {
-    enemy_add (ENEMY_BALL, BULLET_NONE, 0, 100, 3, 0, 1, 4);
+    enemy_add (ENEMY_BALL, BULLET_NONE, 20, 100, 3, 0, 1, 4);
     enemy_add (ENEMY_BALL, BULLET_NONE, screen_width, 100, -3, 0, 1, 4);
 }
 
 void level_thirteen (void)
 {
-    enemy_add (ENEMY_BALL, BULLET_NONE, screen_width / 2, 100, 3, 0, 1, 7);
+    enemy_add (ENEMY_BALL, BULLET_NONE, (screen_width / 2) - ((BALL_WIDTH * 7 / 2)), 150, 3, 0, 1, 7);
 }
 
 void level_fourteen (void)
 {
     ball_add (5, screen_width / 2, 200, player.speed, 1, 1);
-    enemy_add (ENEMY_BALL, BULLET_NONE, 0, 100, 3, 0, 1, 4);
+    enemy_add (ENEMY_BALL, BULLET_NONE, 20, 100, 3, 0, 1, 4);
     enemy_add (ENEMY_BALL, BULLET_NONE, screen_width, 100, 3, 0, 1, 4);
 }
 
@@ -99,14 +99,14 @@ void level_fiveteen (void)
     int i;
     for (i = 0; i < 16; i++)
     {
-        enemy_add (ENEMY_BALL, BULLET_NONE, (screen_width / 2) - ( 10 * 16) + (i * 16), 100, 3, 0, 1, 1);
+        enemy_add (ENEMY_BALL, BULLET_NONE, (screen_width / 2) - ( 10 * 16) + (i * 16), 120, 3, 0, 1, 1);
     }
 }
 
 void level_sixteen (void)
 {
     int i, offset;
-    offset = (screen_width /2) - (10 * 40);
+    offset = (screen_width /2) - (10 * 20);
     for (i = 1; i < 10; i++)
     {
         enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 200, 1, 0, 1,1);
@@ -116,31 +116,31 @@ void level_sixteen (void)
 void level_seventeen (void)
 {
     int i, offset;
-    offset = (screen_width /2) - (10 * 40);
+    offset = (screen_width /2) - (10 * 20);
     for (i = 1; i < 10; i++)
     {
-        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 50, player.speed, 0, 1,1);
-        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 90, player.speed, 0, 1,1);
-        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 130, player.speed, 0, 1,1);
-        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 170, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 100, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 140, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 180, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 220, player.speed, 0, 1,1);
     }
 }
 
 void level_eighteen (void)
 {
     int i, offset;
-    offset = (screen_width /2) - (10 * 40);
+    offset = (screen_width /2) - (10 * 20);
     for (i = 1; i < 10; i++)
     {
         enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 200, 1, 0, 1,1);
     }
 
-    enemy_add (ENEMY_HOMING, BULLET_HOMING, screen_width / 2, 0 , 3, 2, 1, 1);
-    enemy_add (ENEMY_HOMING, BULLET_NORMAL, (screen_width / 2) - 400, 0 , 3, 1, 1, 1);
-    enemy_add (ENEMY_HOMING, BULLET_NORMAL, (screen_width / 2) + 400, 0 , 3, 2, 1, 1);
+    enemy_add (ENEMY_HOMING, BULLET_HOMING, screen_width / 2, 70 , 3, 2, 1, 1);
+    enemy_add (ENEMY_HOMING, BULLET_NORMAL, (screen_width / 2) - 400, 70 , 3, 1, 1, 1);
+    enemy_add (ENEMY_HOMING, BULLET_NORMAL, (screen_width / 2) + 400, 70, 3, 2, 1, 1);
 }
 
 void level_nineteen (void)
 {
-
+    enemy_add (ENEMY_HOMING, BULLET_NONE, (screen_width / 2) - ((CENTIPEDE_WIDTH / 2) * 6), 70 , 3, 1, 20, 6);
 }

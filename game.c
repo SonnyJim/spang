@@ -47,12 +47,14 @@ static void gameover_init (void)
     hiscore_position = NUM_HISCORES + 1;
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear (renderer);
+    stars_draw ();
     player_draw ();
     balls_draw ();
     enemy_draw ();
     bullets_draw ();
     powerups_draw ();
-    explosions_draw ();
+    //explosions_draw ();
+
     render_score ();
     msg_draw ();
     Mix_HaltMusic ();

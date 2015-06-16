@@ -179,6 +179,7 @@ int sdl_init (void)
     screen_height = 600;
 
     window = SDL_CreateWindow("Spang!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, 0);
+    SDL_ShowCursor(SDL_DISABLE);
 
     if (window == NULL)
     {
