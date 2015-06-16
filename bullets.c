@@ -22,7 +22,6 @@ void bullets_init (void)
 void bullet_add (void)
 {
     int i;
-
     //Don't allow adding any more bullets
     if (bullet_timer + player.bullet_delay > SDL_GetTicks () || bullets_on_screen >= player.bullet_max)
         return;

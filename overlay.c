@@ -161,7 +161,7 @@ void msg_level_up (void)
 {
     char buffer[32];
     sprintf (buffer, "Level %i", player.level);
-    msg_show (buffer, 0, (screen_height / 2) - 200 , 3, font2, ALIGN_CENTRE, green);
+    msg_show (buffer, 0, 60 , 3, font2, ALIGN_CENTRE, green);
 }
 
 static void msg_draw_aligned (int i)

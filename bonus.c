@@ -212,6 +212,7 @@ static void bonus_store_player (void)
     player.combo_level = 0;
 
     old_combo_level = player.combo_level;
+    combo_set_level (player.combo_level);
 
 }
 
@@ -228,10 +229,11 @@ static void bonus_restore_player (void)
 
 void bonus_level_start (void)
 {
+    powerup_megashot_disable ();
     bonus_barrels_init ();
     bonus_store_player ();
     bonus_level_active = 1;
-    bonus_level_time = 60 * 60;
+    bonus_level_time = 30 * 60;
     player.bonus_level++;
     level_change_timer = 3 * 60;
     bonus_barrel_add (screen_width / 2, 100, 3, 0, 7);

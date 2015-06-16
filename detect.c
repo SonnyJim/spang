@@ -52,6 +52,7 @@ static void player_was_hit_by_bullet (int i)
 }
 */
 
+
 static void detect_playerhit (void (*function)(int), SDL_Rect rect, int object_num)
 {
     if (player.invuln_time)
@@ -66,7 +67,7 @@ static void detect_playerhit (void (*function)(int), SDL_Rect rect, int object_n
 
 void detect_enemyhit (SDL_Rect rect, int enemy)
 {
-    detect_playerhit (enemy_remove, rect, enemy);
+    detect_playerhit (enemy_hit, rect, enemy);
 }
 
 //Check if something hit the player

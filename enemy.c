@@ -2,6 +2,7 @@
 //Delay between firing normal bullets
 #define ENEMY_BULLET_NORMAL_DELAY 400
 #define ENEMY_BULLET_HOMING_DELAY 1500
+#define GRAVITY_BALL 2
 
 void enemy_bullet_add (int xpos, int ypos, bullet_t type)
 {
@@ -45,9 +46,39 @@ void enemy_init (void)
     }
 }
 
-int enemy_add (enemy_t type, bullet_t bullet, int xpos, int ypos, float xvel, float yvel, int strength)
+int enemy_add (enemy_t type, bullet_t bullet, int xpos, int ypos, float xvel, float yvel,
+               int strength, int size)
 {
-    int i;
+    int i, w, h;
+    if (size <= 0)
+        size = 1;
+
+
+    switch (type)
+    {
+        case ENEMY_CENTIPEDE:
+        case ENEMY_HOMING:
+            w = CENTIPEDE_WIDTH;
+            h = w;
+            break;
+        case ENEMY_BALL:
+            w = BALL_WIDTH;
+            h = w;
+            break;
+        default:
+            w = 20;
+            h = 20;
+            break;
+    }
+
+    if (xpos < 0)
+        xpos = 0;
+    else if (xpos >= screen_width)
+        xpos = screen_width - (w * size);
+
+    if (ypos > screen_height)
+        ypos = screen_height - (h * size);
+
     for (i = 0; i < MAX_ENEMIES;i++)
     {
         if (enemies[i].type == ENEMY_NONE)
@@ -56,8 +87,9 @@ int enemy_add (enemy_t type, bullet_t bullet, int xpos, int ypos, float xvel, fl
             enemies[i].bullet = bullet;
             enemies[i].rect.x = xpos - (20 /2);
             enemies[i].rect.y = ypos - (20 /2);
-            enemies[i].rect.w = 40;
-            enemies[i].rect.h = 40;
+            enemies[i].rect.w = w * size;
+            enemies[i].rect.h = h * size;
+            enemies[i].size = size;
             enemies[i].xvel = xvel;
             enemies[i].yvel = yvel;
             enemies[i].time = 0;
@@ -81,10 +113,36 @@ static void enemy_score (void)
     player.score += 1000;
 }
 
+static void enemy_ball_hit (int num)
+{
+    if (enemies[num].size == 1)
+    {
+        enemies[num].type = ENEMY_NONE;
+        return;
+    }
+
+    if (enemies[num].xvel > 0)
+    {
+        enemy_add (ENEMY_BALL, BULLET_NONE, enemies[num].rect.x + (enemies[num].rect.w / 2), enemies[num].rect.y,
+                enemies[num].xvel, -4, enemies[num].strength - 1, enemies[num].size -1);
+        enemy_add (ENEMY_BALL, BULLET_NONE, enemies[num].rect.x - (enemies[num].rect.w / 2), enemies[num].rect.y,
+               -enemies[num].xvel, -4, enemies[num].strength - 1, enemies[num].size -1);
+    }
+    else
+    {
+        enemy_add (ENEMY_BALL, BULLET_NONE, enemies[num].rect.x + (enemies[num].rect.w / 2), enemies[num].rect.y,
+                -enemies[num].xvel, -4, enemies[num].strength - 1, enemies[num].size -1);
+        enemy_add (ENEMY_BALL, BULLET_NONE, enemies[num].rect.x - (enemies[num].rect.w / 2), enemies[num].rect.y,
+               enemies[num].xvel, -4, enemies[num].strength - 1, enemies[num].size -1);
+    }
+    enemies[num].type = ENEMY_NONE;
+}
+
 void enemy_hit (int num)
 {
     combo_increment ();
     enemies[num].hits++;
+    player_hit_inc (enemies[num].rect.x, enemies[num].rect.y);
     if (enemies[num].hits < enemies[num].strength)
     {
         Mix_PlayChannel (SND_EXPLOSION, tink, 0);
@@ -94,8 +152,21 @@ void enemy_hit (int num)
     Mix_PlayChannel( SND_EXPLOSION, explosion, 0 );
     explosion_add (enemies[num].rect.x + (enemies[num].rect.w / 2),
                                enemies[num].rect.y + (enemies[num].rect.h /2 ));
-    enemy_remove (num);
-    enemy_score ();
+    switch (enemies[num].type)
+    {
+        case ENEMY_CENTIPEDE:
+        case ENEMY_HOMING:
+            enemy_remove (num);
+            break;
+        case ENEMY_BALL:
+            combo_hit (enemies[num].size);
+            player_score (enemies[num].size);
+            enemy_ball_hit (num);
+            break;
+        default:
+            break;
+    }
+    //enemy_score ();
 }
 
 static void enemy_bullet_check_to_fire (int i)
@@ -202,9 +273,52 @@ void enemy_bullet_update (void)
     }
 }
 
+static void enemy_update_ball (struct enemy *enemy)
+{
+    float gravity = 0.1;
+    enemy->yvel += gravity;
+
+    enemy->rect.x += enemy->xvel;
+    enemy->rect.y += enemy->yvel;
+
+    if (enemy->rect.x <= 0)
+    {
+        enemy->xvel = -enemy->xvel;
+    }
+    else if (enemy->rect.x + enemy->rect.w >= screen_width)
+    {
+        enemy->xvel = -enemy->xvel;
+    }
+    else if (enemy->rect.y + enemy->rect.h >= screen_height)
+    {
+        switch (enemy->size)
+        {
+            default:
+            case 4:
+                enemy->yvel = -10;
+                break;
+            case 3:
+                enemy->yvel = -8;
+                break;
+            case 2:
+                enemy->yvel = -6;
+                break;
+            case 1:
+                enemy->yvel = -4;
+                break;
+        }
+    }
+    if (enemy->rect.y > screen_height)
+        enemy->type = ENEMY_NONE;
+    if (enemy->rect.x <= 0 && enemy->xvel < 0)
+        enemy->xvel = -enemy->xvel;
+}
+
 void enemy_update (void)
 {
     int i;
+    if (level_change_timer)
+        return;
     for (i = 0; i < MAX_ENEMIES; i++)
     {
         if (enemies[i].type != ENEMY_NONE)
@@ -218,6 +332,10 @@ void enemy_update (void)
                     break;
                 case ENEMY_HOMING:
                     enemy_bresenhem_homing (&enemies[i].rect, enemies[i].xvel, enemies[i].yvel, BULLET_NONE);
+                    break;
+                case ENEMY_BALL:
+                    enemy_update_ball (&enemies[i]);
+                    break;
                 case ENEMY_NONE:
                 default:
                     break;
@@ -232,6 +350,11 @@ static void enemy_draw_centipede (int num)
     SDL_RenderCopy (renderer, enemy_tex, NULL, &enemies[num].rect);
 }
 
+static void enemy_draw_ball (int num)
+{
+    SDL_RenderCopy (renderer, balloon_tex, NULL, &enemies[num].rect);
+}
+
 static void enemy_draw_bullets (void)
 {
     int i;
@@ -241,7 +364,6 @@ static void enemy_draw_bullets (void)
         {
             SDL_SetRenderDrawColor (renderer, 255,0,0,0);
             SDL_RenderDrawRect (renderer, &enemy_bullets[i].rect);
-
         }
     }
 }
@@ -257,7 +379,12 @@ void enemy_draw (void)
     {
         if (enemies[i].type != ENEMY_NONE)
         {
-            enemy_draw_centipede (i);
+            if (enemies[i].type == ENEMY_CENTIPEDE)
+                enemy_draw_centipede (i);
+            if (enemies[i].type == ENEMY_HOMING)
+                enemy_draw_centipede (i);
+            else if (enemies[i].type == ENEMY_BALL)
+                enemy_draw_ball (i);
             //SDL_RenderDrawRect( renderer, &enemies[i].rect);
         }
     }

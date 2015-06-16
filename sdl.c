@@ -79,9 +79,10 @@ void sdl_read_input (void)
                 switch (event.key.keysym.sym)
                 {
                     case SDLK_ESCAPE:
-                        running = 0;
-                        break;
-                    case SDLK_b:
+                        if (gamestate == GAME_RUNNING)
+                            gamestate = GAME_OVER;
+                        else
+                            running = 0;
                         break;
                     case SDLK_h:
                         if (draw_hitbox)
@@ -112,6 +113,12 @@ void sdl_read_input (void)
                             game_unpause ();
                         else
                             game_pause ();
+                        break;
+                    case SDLK_z:
+                        player.level++;
+                        break;
+                    case SDLK_x:
+                        player.level--;
                         break;
                     default:
                         break;

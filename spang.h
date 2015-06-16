@@ -21,6 +21,7 @@
 #include "game.h"
 #include "hiscore.h"
 #include "hsentry.h"
+#include "powerup.h"
 
 extern int screen_width;
 extern int screen_height;
@@ -47,6 +48,7 @@ extern SDL_Texture *ball_tex;
 extern SDL_Texture *bullet_tex;
 extern SDL_Texture *ship_tex;
 extern SDL_Texture *bg_tex;
+extern SDL_Texture *balloon_tex;
 
 extern SDL_Texture *health_tex;
 extern SDL_Texture *coin_tex;
@@ -76,22 +78,6 @@ void combo_hit (int size);
 //resources.c
 
 int render_score (void);
-//powerup.c
-typedef enum
-{
-    POWERUP_NONE,
-    POWERUP_HEALTH,
-    POWERUP_COIN,
-    POWERUP_SLOW,
-    POWERUP_MEGASHOT
-}powerup_t;
-
-void powerups_init (void);
-void powerup_add (powerup_t type, int xpos, int ypos);
-void powerups_draw (void);
-void powerup_smartbomb (void);
-void powerups_textures_init (void);
-extern int megashot_active;
 
 void explosions_init (void);
 void explosion_add (int xpos, int ypos);
@@ -125,5 +111,3 @@ extern SDL_Color white;
 
 //bg.c
 void stars_draw (void);
-
-

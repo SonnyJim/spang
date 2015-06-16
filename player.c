@@ -9,6 +9,12 @@ int score_bonus = 10;
 
 int invuln_delay = 2 * 60;
 
+void player_hit_inc (int xpos, int ypos)
+{
+    if (player.hits % 100 == 0)
+        powerup_add (POWERUP_HEALTH, xpos, ypos);
+}
+
 void player_init (void)
 {
     player.rect.w = 50;

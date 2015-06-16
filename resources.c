@@ -7,6 +7,7 @@ SDL_Texture *ball_tex = NULL;
 SDL_Texture *bullet_tex = NULL;
 SDL_Texture *bg_tex = NULL;
 SDL_Texture *ship_tex;
+SDL_Texture *balloon_tex = NULL;
 
 SDL_Texture *health_tex = NULL;
 SDL_Texture *coin_tex = NULL;
@@ -131,6 +132,7 @@ int textures_load (int num)
     enemy_tex = texture_load_img (texture_packs[num].enemy);
 
     bonus_tex = texture_load_img ("data/gfx/default/barrel.png");
+    balloon_tex = texture_load_img ("data/gfx/default/ball.png");
 
     //Need to call this to update the pointers to powerup textures
     powerups_textures_init ();

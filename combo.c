@@ -100,5 +100,4 @@ void combo_hit (int size)
     else
         score_bonus = 10;
     player.last_size = size;
-
 }

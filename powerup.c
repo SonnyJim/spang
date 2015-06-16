@@ -30,6 +30,7 @@ void powerups_textures_init (void)
     powerups_tex[POWERUP_SLOW] = slow_tex;
     powerups_tex[POWERUP_MEGASHOT] = megashot_tex;
 }
+
 void powerups_init (void)
 {
     int i;
@@ -141,6 +142,16 @@ void powerups_update (int i)
         powerups[i].rect.h -= 1;
 }
 
+void powerup_megashot_disable (void)
+{
+    if (!megashot_active)
+        return;
+    Mix_ResumeMusic ();
+    if (!bonus_level_active)
+        Mix_PlayChannel(-1, alarmreverse, 0);
+    megashot_active = 0;
+}
+
 void powerups_draw (void)
 {
     int i;
@@ -171,9 +182,7 @@ void powerups_draw (void)
     }
     else if (megashot_active && megashot_timer + MEGASHOT_TIME < SDL_GetTicks ())
     {
-        Mix_ResumeMusic ();
-        Mix_PlayChannel(-1, alarmreverse, 0);
-        megashot_active = 0;
+        powerup_megashot_disable ();
     }
 }
 

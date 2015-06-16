@@ -110,8 +110,8 @@ void ball_hit (int ball_num)
         return;
     }
 
-    if (player.hits % 100 == 0)
-        powerup_add (POWERUP_HEALTH, balls[ball_num].rect.x, balls[ball_num].rect.y);
+    player_hit_inc (balls[ball_num].rect.x, balls[ball_num].rect.y);
+
     size = balls[ball_num].size - 1;
 
     ball_add (size, balls[ball_num].rect.x + (size /2), balls[ball_num].rect.y + (balls[ball_num].rect.h / 2), player.speed, 0, balls[ball_num].strength - 1);

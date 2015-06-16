@@ -5,7 +5,8 @@ int level_change_paused = 0;
 void (*level_p[NUM_LEVELS]) () =
 {
     level_one, level_two, level_three, level_four, level_five, level_five, level_five, level_eight,
-    level_nine, level_ten, level_eleven, level_twelve
+    level_nine, level_ten, level_eleven, level_twelve, level_thirteen, level_fourteen, level_fiveteen, level_sixteen,
+    level_seventeen, level_eighteen, level_nineteen
 };
 
 static void level_hit_ratio (void)
@@ -78,7 +79,7 @@ void level_up (void)
         powerup_add (POWERUP_MEGASHOT, rand () % screen_width, 0);
     if (player.level % 4 == 0)
     {
-        msg_show ("Supertapper recharge", 0, (screen_height / 2) - 100, 3, font1, ALIGN_CENTRE, green);
+        msg_show ("Supertapper recharge", 0, 130, 3, font1, ALIGN_CENTRE, green);
         player.smartbomb = 1;
     }
 

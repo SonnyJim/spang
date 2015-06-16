@@ -6,6 +6,7 @@ void player_hit (void);
 void player_score (int size);
 void player_trippy_hit (void);
 void player_trippy_level_inc (void);
+void player_hit_inc (int xpos, int ypos);
 
 void player_ball_destroyed (void);
 

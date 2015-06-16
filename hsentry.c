@@ -12,6 +12,7 @@ int hsentry_initted = 0;
 static void hsentry_update_letter (void)
 {
     hiscores[hiscore_position].initials[hsentry_index] = hsentry_letters[hsentry_letter];
+    Mix_PlayChannel (-1, comboup, 0);
 }
 
 int hsentry_keyrepeat (void)
@@ -29,7 +30,7 @@ void hsentry_fire (void)
 {
     if (hsentry_keyrepeat ())
         return;
-
+    Mix_PlayChannel (SND_LASER, speedup, 0);
     if (hsentry_index < 2)
         hsentry_index++;
     else

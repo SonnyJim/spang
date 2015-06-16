@@ -1,5 +1,7 @@
 /* TODO:
-High scores
+Sort out ball gravity based on player speed
+Finish centipede enemy
+Build more levels
 */
 
 #include "spang.h"

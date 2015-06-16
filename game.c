@@ -23,6 +23,7 @@ void game_unpause (void)
 static void game_init (void)
 {
     player_init ();
+    enemy_init ();
     gameover_timer = 0;
     balls_init_all ();
     bullets_init ();
@@ -46,7 +47,14 @@ static void gameover_init (void)
     hiscore_position = NUM_HISCORES + 1;
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear (renderer);
-    game_loop ();
+    player_draw ();
+    balls_draw ();
+    enemy_draw ();
+    bullets_draw ();
+    powerups_draw ();
+    explosions_draw ();
+    render_score ();
+    msg_draw ();
     Mix_HaltMusic ();
     fprintf (stdout, "Score: %ld\n", player.score);
     fprintf (stdout, "Shots fired: %ld\n", player.shots_fired);
