@@ -11,7 +11,7 @@ int invuln_delay = 2 * 60;
 
 void player_hit_inc (int xpos, int ypos)
 {
-    if (player.hits % 100 == 0)
+    if (player.hits % (100 * player.laps) == 0)
         powerup_add (POWERUP_HEALTH, xpos, ypos);
 }
 
@@ -48,6 +48,8 @@ void player_init (void)
     player.invuln_time = 0;
 
     player.bonus_level = 0;
+
+    player.laps = 0;
 }
 
 void player_update_hitrect (void)

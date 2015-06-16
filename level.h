@@ -1,4 +1,4 @@
-#define NUM_LEVELS 19
+#define NUM_LEVELS 21
 extern int level_change_timer;
 void level_up (void);
 void level_change_pause (void);
@@ -23,4 +23,5 @@ void level_sixteen (void);
 void level_seventeen (void);
 void level_eighteen (void);
 void level_nineteen (void);
-
+void level_twenty (void);
+void level_twentyone (void);

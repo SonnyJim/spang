@@ -35,8 +35,12 @@ void hsentry_fire (void)
         hsentry_index++;
     else
     {
+        hsentry_update_letter ();
+        if (strcmp ("   ", hiscores[hiscore_position].initials) == 0)
+            strcpy (hiscores[hiscore_position].initials, "FEK");
         hsentry_initted = 0;
         gamestate = GAME_AMODE;
+        return;
     }
     hsentry_update_letter();
 }

@@ -1,9 +1,12 @@
 #include "spang.h"
+#include <math.h>
 
 #define NUMBER_OF_STARS 1020
 Uint16 centerx;
 Uint16 centery;
 int init = 0;
+int rotate = 0;
+float theta;
 
 /*star struct*/
 typedef struct
@@ -45,8 +48,8 @@ void init_star(star_s* star, int i)
   star->time = 0;
   if (megashot_active)
   {
-      star->rect.w = 6;
-      star->rect.h = 6;
+      star->rect.w = 4;
+      star->rect.h = 4;
       star->time = 100;
   }
 }
@@ -63,9 +66,18 @@ static void stars_init (void)
     }
 }
 
+void stars_toggle_rotation (void)
+{
+    if (rotate == 1)
+        rotate = 0;
+    else
+        rotate = 1;
+}
+
 void stars_draw (void)
 {
     int i, tempx, tempy;
+    float rotate_speed, px, py;
 
     if (!init)
     {
@@ -82,25 +94,42 @@ void stars_draw (void)
 	        init_star(stars + i, i + 1);
 	    }
 
-	    /*compute 3D position*/
-	    tempx = (stars[i].xpos / stars[i].zpos) + centerx;
-	    tempy = (stars[i].ypos / stars[i].zpos) + centery;
+        rotate_speed = player.speed / 300000;
+        if (rotate == 1)
+        {
+            theta += rotate_speed;
+            //if (theta > 360)
+            //    theta = 0;
+        }
+        else if (rotate == 0)
+        {
+            theta -= rotate_speed;
+        }
+
+        if (gamestate == GAME_AMODE || GAME_HSENTRY)
+        {
+            theta += 0.000003;
+        }
+
+        px = (stars[i].xpos / stars[i].zpos) + centerx;
+        py = (stars[i].ypos / stars[i].zpos) + centery;
+        tempx = cos(theta) * (px-centerx) - sin(theta) * (py-centery) + centerx;
+        tempy = sin(theta) * (px-centerx) + cos(theta) * (py-centery) + centery;
 
         if (stars[i].time < 100)
             stars[i].time++;
         else
             stars[i].speed += 0.1;
 
-	    if (tempx < 0 || tempx > screen_width - 1 || tempy < 0 || tempy > screen_height - 1) /*check if a star leaves the screen*/
+	    if (tempx < 0 || tempx > screen_width - 1 || tempy < 0 || tempy > screen_height - 1)
         {
             init_star(stars + i, i + 1);
             continue;
 	    }
+
 	    stars[i].rect.x = tempx;
 	    stars[i].rect.y = tempy;
         SDL_SetRenderDrawColor( renderer, 0, stars[i].color, 0, 0 );
-        //SDL_RenderDrawPoint (renderer, stars[i].rect.x, stars[i].rect.y);
         SDL_RenderFillRect( renderer, &stars[i].rect);
 	}
-
 }

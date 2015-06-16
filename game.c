@@ -31,11 +31,13 @@ static void game_init (void)
     powerups_init ();
     explosions_init ();
     msg_init ();
+    textures_load (0);
 //    stars_init ();
 }
 
 void game_start (void)
 {
+    bonus_level_active = 0;
     game_init ();
     gamestate = GAME_RUNNING;
     Mix_PlayMusic (music[MUSIC_CYBERRID], -1);
@@ -56,7 +58,7 @@ static void gameover_init (void)
     //explosions_draw ();
 
     render_score ();
-    msg_draw ();
+    //msg_draw ();
     Mix_HaltMusic ();
     fprintf (stdout, "Score: %ld\n", player.score);
     fprintf (stdout, "Shots fired: %ld\n", player.shots_fired);

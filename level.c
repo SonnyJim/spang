@@ -6,7 +6,7 @@ void (*level_p[NUM_LEVELS]) () =
 {
     level_one, level_two, level_three, level_four, level_five, level_five, level_five, level_eight,
     level_nine, level_ten, level_eleven, level_twelve, level_thirteen, level_fourteen, level_fiveteen, level_sixteen,
-    level_seventeen, level_eighteen, level_nineteen
+    level_seventeen, level_eighteen, level_nineteen, level_twenty, level_twentyone
 };
 
 static void level_hit_ratio (void)
@@ -55,7 +55,7 @@ void level_up (void)
 {
     if (bonus_level_active)
         return;
-
+    stars_toggle_rotation ();
     Mix_PlayChannel (SND_MUSIC, levelup, 0);
     level_hit_ratio ();
 

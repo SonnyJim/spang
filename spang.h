@@ -111,3 +111,4 @@ extern SDL_Color white;
 
 //bg.c
 void stars_draw (void);
+void stars_toggle_rotation (void);

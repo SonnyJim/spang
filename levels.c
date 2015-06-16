@@ -4,6 +4,7 @@ int current_texture = 0;
 
 void level_one (void)
 {
+    player.laps++;
     ball_add (5, screen_width / 2, 200, player.speed, 1, 1);
 }
 
@@ -44,19 +45,6 @@ void level_eight (void)
 
 void level_nine (void)
 {
-    /*
-    if (current_texture < 2)
-        current_texture++;
-    else
-        current_texture = 0;
-    textures_load (current_texture);
-    if (current_texture == 1)
-        Mix_PlayMusic (music[MUSIC_BUBBLEBOBBLE], -1);
-    else if (current_texture == 2)
-        Mix_PlayMusic (music[MUSIC_PACMAN], -1);
-    else
-        Mix_PlayMusic (music[MUSIC_T2K], -1);
-        */
     ball_add (7, screen_width / 2, screen_height / 2, player.speed, 0, 6);
 }
 
@@ -73,7 +61,7 @@ void level_ten (void)
 
 void level_eleven (void)
 {
-    enemy_add (ENEMY_BALL, BULLET_NONE, screen_width / 2, 100, 3, 0, 1, 4);
+    enemy_add (ENEMY_BALL, BULLET_NONE, (screen_width / 2) - ((BALL_WIDTH * 4)/2), 140, 3, 0, 1, 4);
 }
 
 void level_twelve (void)
@@ -119,10 +107,10 @@ void level_seventeen (void)
     offset = (screen_width /2) - (10 * 20);
     for (i = 1; i < 10; i++)
     {
-        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 100, player.speed, 0, 1,1);
-        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 140, player.speed, 0, 1,1);
-        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 180, player.speed, 0, 1,1);
-        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 220, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 110, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 150, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 190, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 230, player.speed, 0, 1,1);
     }
 }
 
@@ -142,5 +130,35 @@ void level_eighteen (void)
 
 void level_nineteen (void)
 {
+    enemy_add (ENEMY_HOMING, BULLET_NONE, 20, 70, 3, 1, 5, 3);
+    enemy_add (ENEMY_HOMING, BULLET_NONE, screen_width - 20 - ((CENTIPEDE_WIDTH) / 2 * 3), 70, 3, 1, 5, 3);
     enemy_add (ENEMY_HOMING, BULLET_NONE, (screen_width / 2) - ((CENTIPEDE_WIDTH / 2) * 6), 70 , 3, 1, 20, 6);
+}
+
+void level_twenty (void)
+{
+    int i, offset;
+    offset = (screen_width /2) - (20 * 20);
+    for (i = 1; i < 20; i++)
+    {
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 110, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 150, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 190, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 230, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 270, player.speed, 0, 1,1);
+        enemy_add (ENEMY_CENTIPEDE, BULLET_NORMAL, offset + (i * 40), 310, player.speed, 0, 1,1);
+    }
+}
+
+void level_twentyone (void)
+{
+    if (player.laps <= 2)
+        textures_load (player.laps);
+
+    if (player.laps == 1)
+        Mix_PlayMusic (music[MUSIC_BUBBLEBOBBLE], -1);
+    else
+        Mix_PlayMusic (music[MUSIC_T2K], -1);
+
+    enemy_add (ENEMY_BALL, BULLET_NONE, (screen_width / 2) - ((BALL_WIDTH * 10 / 2)), 150, 3, 0, 1, 8);
 }

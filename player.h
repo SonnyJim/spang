@@ -36,6 +36,7 @@ struct player_t
     long destroyed_balls;
     int invuln_time;
     int bonus_level;
+    int laps;
 };
 
 struct player_t player;

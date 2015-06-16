@@ -1,6 +1,7 @@
 #include "spang.h"
 int fire, left, right, smartbomb = 0;
 extern int running;
+extern int rotate;
 
 static void input_read_left (void)
 {
@@ -119,6 +120,12 @@ void sdl_read_input (void)
                         break;
                     case SDLK_x:
                         player.level--;
+                        break;
+                    case SDLK_r:
+                        if (rotate == 1)
+                            rotate = 3;
+                        else
+                            rotate = 1;
                         break;
                     default:
                         break;
