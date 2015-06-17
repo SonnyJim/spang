@@ -29,6 +29,7 @@ void hsentry_fire (void)
         if (strcmp ("   ", hiscores[hiscore_position].initials) == 0)
             strcpy (hiscores[hiscore_position].initials, "FEK");
         hsentry_initted = 0;
+        network_send_score (hiscores[hiscore_position].initials, hiscores[hiscore_position].score);
         gamestate = GAME_AMODE;
         return;
     }

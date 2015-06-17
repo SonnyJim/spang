@@ -64,7 +64,7 @@ static void gameover_init (void)
     Mix_HaltMusic ();
     total_playtime += (SDL_GetTicks () - playtime_start) / 1000;
 
-    fprintf (stdout, "Total playtime: %ld\n", total_playtime);
+    fprintf (stdout, "Total playtime: %i\n", total_playtime);
     fprintf (stdout, "Score: %ld\n", player.score);
     fprintf (stdout, "Shots fired: %ld\n", player.shots_fired);
     fprintf (stdout, "Hits: %ld\n", player.hits);

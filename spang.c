@@ -2,7 +2,6 @@
 Sort out ball gravity based on player speed
 Finish centipede enemy
 Build more levels
-Log total game time
 Online leader boards
 Close/free files/devices on quit
 */
@@ -34,6 +33,7 @@ int main (int argc, char *argv[])
         fprintf (stderr, "Error loading SFX: %s\n", SDL_GetError());
         return 1;
     }
+
 
     if (config_load ())
     {
