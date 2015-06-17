@@ -198,7 +198,7 @@ int music_init (void)
     ret = music_load ("data/sfx/music/t2kremix.mod", MUSIC_T2K);
     ret = music_load ("data/sfx/music/bubble_bobble_tribute.xm", MUSIC_BUBBLEBOBBLE);
     ret = music_load ("data/sfx/music/cyberrid.mod", MUSIC_CYBERRID);
-    ret = music_load ("data/sfx/music/pacman.mod", MUSIC_PACMAN);
+    //ret = music_load ("data/sfx/music/pacman.mod", MUSIC_PACMAN);
 
     return ret;
 }
