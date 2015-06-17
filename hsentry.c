@@ -2,7 +2,6 @@
 
 const char *hsentry_letters = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-Uint32 hsentry_repeat;
 
 int hsentry_index;
 int hsentry_letter;
@@ -15,20 +14,11 @@ static void hsentry_update_letter (void)
     Mix_PlayChannel (-1, comboup, 0);
 }
 
-int hsentry_keyrepeat (void)
-{
-    if (hsentry_repeat + 200 < SDL_GetTicks ())
-    {
-        hsentry_repeat = SDL_GetTicks ();
-        return 0;
-    }
-    else
-        return 1;
-}
+
 
 void hsentry_fire (void)
 {
-    if (hsentry_keyrepeat ())
+    if (input_keyrepeat ())
         return;
     Mix_PlayChannel (SND_LASER, speedup, 0);
     if (hsentry_index < 2)
@@ -47,7 +37,7 @@ void hsentry_fire (void)
 
 void hsentry_right (void)
 {
-    if (hsentry_keyrepeat ())
+    if (input_keyrepeat ())
         return;
 
     if (hsentry_letter < strlen (hsentry_letters) - 1)
@@ -59,7 +49,7 @@ void hsentry_right (void)
 
 void hsentry_left (void)
 {
-    if (hsentry_keyrepeat ())
+    if (input_keyrepeat ())
         return;
 
     if (hsentry_letter > 0)
@@ -71,7 +61,6 @@ void hsentry_left (void)
 
 static void hsentry_init (void)
 {
-    hsentry_repeat = 0;
     hsentry_index = 0;
     hsentry_letter = 0;
     strcpy (hiscores[hiscore_position].initials, "   ");

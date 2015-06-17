@@ -2,7 +2,7 @@
 #define MAX_POWERUPS 64
 #define POWERUP_DISPLAY_TIME 2000
 #define MEGASHOT_TIME 6000
-#define NUM_POWERUPS 4
+#define NUM_POWERUPS 5
 
 Mix_Chunk *health1;
 Mix_Chunk *kaching;

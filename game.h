@@ -5,7 +5,9 @@ enum state_t
     GAME_AMODE,
     GAME_RUNNING,
     GAME_OVER,
-    GAME_HSENTRY
+    GAME_HSENTRY,
+    GAME_CONFIG,
+    GAME_CONFIG_INPUT
 };
 
 void game_pause (void);

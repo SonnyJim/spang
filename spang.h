@@ -22,6 +22,7 @@
 #include "hiscore.h"
 #include "hsentry.h"
 #include "powerup.h"
+#include "config.h"
 
 extern int screen_width;
 extern int screen_height;
@@ -63,6 +64,8 @@ extern SDL_Rect player_hitrect1;
 extern SDL_Rect player_hitrect2;
 
 int sdl_init (void);
+void sdl_close (void);
+
 void sdl_read_input (void);
 
 int check_axis (SDL_Rect a, SDL_Rect b);
@@ -112,3 +115,8 @@ extern SDL_Color white;
 //bg.c
 void stars_draw (void);
 void stars_toggle_rotation (void);
+
+int input_keyrepeat (void);
+void input_joystick_init (void);
+void input_joystick_close (void);
+

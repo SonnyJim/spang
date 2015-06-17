@@ -2,6 +2,9 @@
 Sort out ball gravity based on player speed
 Finish centipede enemy
 Build more levels
+Log total game time
+Online leader boards
+Close/free files/devices on quit
 */
 
 #include "spang.h"
@@ -32,6 +35,12 @@ int main (int argc, char *argv[])
         return 1;
     }
 
+    if (config_load ())
+    {
+        fprintf (stderr, "Error loading config\n");
+    }
+
+
     hiscore_init ();
     gamestate = GAME_AMODE;
     running = 1;
@@ -59,6 +68,10 @@ int main (int argc, char *argv[])
                 case GAME_HSENTRY:
                     hsentry_loop ();
                     break;
+                case GAME_CONFIG:
+                case GAME_CONFIG_INPUT:
+                    config_loop ();
+                    break;
             }
         }
 
@@ -66,16 +79,6 @@ int main (int argc, char *argv[])
     }
 
     hiscore_save ();
-    while (running)
-    {
-        sdl_read_input();
-        msg_draw ();
-        SDL_RenderPresent (renderer);
-    }
-
-    Mix_FreeChunk (laser1);
-    Mix_FreeChunk (explosion);
-    Mix_CloseAudio();
-    SDL_Quit ();
+    sdl_close ();
     return 0;
 }

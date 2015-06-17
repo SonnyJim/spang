@@ -1,7 +1,45 @@
 #include "spang.h"
-int fire, left, right, smartbomb = 0;
+int fire, left, right, up, down, smartbomb, pause = 0;
 extern int running;
-extern int rotate;
+
+const int JOYSTICK_DEAD_ZONE = 8000;
+
+static void input_read_pause (void)
+{
+    if (input_keyrepeat())
+        return;
+    if (gamestate == GAME_RUNNING)
+    {
+        if (paused)
+            paused = 0;
+        else
+            paused = 1;
+    }
+}
+
+static void input_read_up (void)
+{
+    switch (gamestate)
+    {
+        case GAME_CONFIG:
+            config_up ();
+            break;
+        default:
+            break;
+    }
+}
+
+static void input_read_down (void)
+{
+    switch (gamestate)
+    {
+        case GAME_CONFIG:
+            config_down ();
+            break;
+        default:
+            break;
+    }
+}
 
 static void input_read_left (void)
 {
@@ -13,6 +51,9 @@ static void input_read_left (void)
             break;
         case GAME_HSENTRY:
             hsentry_left ();
+            break;
+        case GAME_CONFIG:
+            config_left ();
             break;
         default:
             break;
@@ -29,6 +70,9 @@ static void input_read_right (void)
             break;
         case GAME_HSENTRY:
             hsentry_right ();
+            break;
+        case GAME_CONFIG:
+            config_right ();
             break;
         default:
             break;
@@ -49,6 +93,9 @@ static void input_read_fire (void)
         case GAME_HSENTRY:
             hsentry_fire ();
             break;
+        case GAME_CONFIG:
+            config_fire ();
+            break;
         default:
             break;
     }
@@ -62,6 +109,9 @@ static void input_read_smartbomb (void)
             if (!paused)
                 powerup_smartbomb ();
             break;
+        case GAME_AMODE:
+            gamestate = GAME_CONFIG;
+            break;
     }
 }
 
@@ -70,19 +120,105 @@ void sdl_read_input (void)
     SDL_Event event;
     while (SDL_PollEvent (&event))
     {
+        if (gamestate == GAME_CONFIG_INPUT)
+        {
+            switch (event.type)
+            {
+                case SDL_KEYDOWN:
+                    if (event.key.keysym.sym == SDLK_ESCAPE)
+                        gamestate = GAME_CONFIG;
+                    break;
+                case SDL_JOYAXISMOTION:
+                    config_input_read (SDL_JOYAXISMOTION, event.jaxis.axis);
+                    break;
+                case SDL_JOYBUTTONDOWN:
+                    config_input_read (SDL_JOYBUTTONDOWN, event.jbutton.button);
+                    break;
+            }
+        }
         switch (event.type)
         {
             case SDL_QUIT:
                 running = 0;
                 break;
-
+            case SDL_JOYAXISMOTION:
+                if( event.jaxis.axis == joy_cfg.axis1 )
+                {
+                    if( event.jaxis.value < -JOYSTICK_DEAD_ZONE )
+                    {
+                        right = 0;
+                        left = 1;
+                    }
+                    else if( event.jaxis.value > JOYSTICK_DEAD_ZONE )
+                    {
+                        left = 0;
+                        right = 1;
+                    }
+                    else
+                    {
+                        left = 0;
+                        right = 0;
+                    }
+                }
+                else if( event.jaxis.axis == joy_cfg.axis2 )
+                {
+                    if( event.jaxis.value < -JOYSTICK_DEAD_ZONE )
+                    {
+                        down = 0;
+                        up = 1;
+                    }
+                    else if( event.jaxis.value > JOYSTICK_DEAD_ZONE )
+                    {
+                        down = 1;
+                        up = 0;
+					}
+					else
+                    {
+                        up = 0;
+                        down = 0;
+                    }
+                }
+                break;
+            case SDL_JOYBUTTONDOWN:
+                if (event.jbutton.button == joy_cfg.fire)
+                {
+                    fire = 1;
+                }
+                else if (event.jbutton.button == joy_cfg.bomb)
+                {
+                    smartbomb = 1;
+                }
+                else if (event.jbutton.button == joy_cfg.pause)
+                {
+                    pause = 1;
+                }
+                break;
+            case SDL_JOYBUTTONUP:
+                if (event.jbutton.button == joy_cfg.fire)
+                {
+                    fire = 0;
+                }
+                else if (event.jbutton.button == joy_cfg.bomb)
+                {
+                    smartbomb = 0;
+                }
+                else if (event.jbutton.button == joy_cfg.pause)
+                {
+                    pause = 0;
+                }
+                break;
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym)
                 {
                     case SDLK_ESCAPE:
+                        paused = 0;
                         if (gamestate == GAME_RUNNING)
                             gamestate = GAME_OVER;
-                        else
+                        else if (gamestate == GAME_CONFIG)
+                            gamestate = GAME_AMODE;
+                        else if (gamestate == GAME_CONFIG_INPUT)
+                            gamestate = GAME_CONFIG;
+                        else if (gamestate == GAME_AMODE)
                             running = 0;
                         break;
                     case SDLK_h:
@@ -109,6 +245,12 @@ void sdl_read_input (void)
                     case SDLK_SPACE:
                         smartbomb = 1;
                         break;
+                    case SDLK_UP:
+                        up = 1;
+                        break;
+                    case SDLK_DOWN:
+                        down = 1;
+                        break;
                     case SDLK_p:
                         if (paused)
                             game_unpause ();
@@ -120,12 +262,6 @@ void sdl_read_input (void)
                         break;
                     case SDLK_x:
                         player.level--;
-                        break;
-                    case SDLK_r:
-                        if (rotate == 1)
-                            rotate = 3;
-                        else
-                            rotate = 1;
                         break;
                     default:
                         break;
@@ -146,6 +282,12 @@ void sdl_read_input (void)
                     case SDLK_SPACE:
                         smartbomb = 0;
                         break;
+                    case SDLK_UP:
+                        up = 0;
+                        break;
+                    case SDLK_DOWN:
+                        down = 0;
+                        break;
                     default:
                         break;
                 }
@@ -160,6 +302,14 @@ void sdl_read_input (void)
         input_read_left ();
     else if (right && !left)
         input_read_right ();
+
+    if (up && !down)
+        input_read_up ();
+    else if (down && !up)
+        input_read_down ();
+
+    if (pause)
+        input_read_pause ();
 }
 
 int sdl_init (void)
@@ -167,11 +317,12 @@ int sdl_init (void)
     SDL_DisplayMode videomode;
     SDL_Window *window;
 
-    if (SDL_Init (SDL_INIT_VIDEO |SDL_INIT_AUDIO) != 0)
+    if (SDL_Init (SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_JOYSTICK| SDL_INIT_EVENTS) != 0)
     {
         fprintf (stderr, "\nError initialising SDL: %s\n", SDL_GetError ());
         return 1;
     }
+    input_joystick_init ();
 
     if (SDL_GetCurrentDisplayMode (0, &videomode) != 0)
     {
@@ -219,5 +370,16 @@ int sdl_init (void)
         fprintf (stderr, "Error setting up font system\n");
         return 1;
     }
+
     return fonts_init ();
+}
+
+void sdl_close (void)
+{
+    input_joystick_close ();
+    Mix_FreeChunk (laser1);
+    Mix_FreeChunk (explosion);
+    Mix_CloseAudio();
+    SDL_Quit ();
+
 }

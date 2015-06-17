@@ -5,8 +5,10 @@
 Uint16 centerx;
 Uint16 centery;
 int init = 0;
-int rotate = 0;
+int bg_rotate = 0;
 float theta;
+
+SDL_Surface *stars_srf;
 
 /*star struct*/
 typedef struct
@@ -41,7 +43,7 @@ void init_star(star_s* star, int i)
   star->ypos *= 3072.0;
 
   star->zpos =  i * ((player.trippy_level /2) + 0.1);
-  //star->zpos = i;
+  //star->zpos = i * 2;
   //star->speed =  ((player.trippy_level)) + (int)(2.0 * (rand()/(RAND_MAX+1.0)));
   star->speed = ((player.speed + 1) * (player.trippy_level +1)) / 3;
   star->color = i >> 2; /*the closer to the viewer the brighter*/
@@ -68,10 +70,12 @@ static void stars_init (void)
 
 void stars_toggle_rotation (void)
 {
-    if (rotate == 1)
-        rotate = 0;
+    if (!bg_rotate)
+        return;
+    if (bg_rotate == 1)
+        bg_rotate = 2;
     else
-        rotate = 1;
+        bg_rotate = 1;
 }
 
 void stars_draw (void)
@@ -95,20 +99,21 @@ void stars_draw (void)
 	    }
 
         rotate_speed = player.speed / 300000;
-        if (rotate == 1)
+
+        if (bg_rotate == 1)
         {
             theta += rotate_speed;
             //if (theta > 360)
             //    theta = 0;
         }
-        else if (rotate == 0)
+        else if (bg_rotate == 2)
         {
             theta -= rotate_speed;
         }
 
         if (gamestate == GAME_AMODE || GAME_HSENTRY)
         {
-            theta += 0.000003;
+            theta += 0.000003   ;
         }
 
         px = (stars[i].xpos / stars[i].zpos) + centerx;
@@ -116,10 +121,12 @@ void stars_draw (void)
         tempx = cos(theta) * (px-centerx) - sin(theta) * (py-centery) + centerx;
         tempy = sin(theta) * (px-centerx) + cos(theta) * (py-centery) + centery;
 
-        if (stars[i].time < 100)
-            stars[i].time++;
-        else
-            stars[i].speed += 0.1;
+//        tempx = (stars[i].xpos / stars[i].zpos) + centerx;
+//        tempy = (stars[i].ypos / stars[i].zpos) + centery;
+        //if (stars[i].time < 100)
+        //    stars[i].time++;
+        //else
+            stars[i].speed += 0.01;
 
 	    if (tempx < 0 || tempx > screen_width - 1 || tempy < 0 || tempy > screen_height - 1)
         {

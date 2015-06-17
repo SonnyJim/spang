@@ -1,6 +1,6 @@
 #include "spang.h"
 int gameover_timer = 0;
-
+Uint32 playtime_start;
 
 void game_pause (void)
 {
@@ -29,9 +29,10 @@ static void game_init (void)
     bullets_init ();
     player_init ();
     powerups_init ();
-    explosions_init ();
     msg_init ();
     textures_load (0);
+    explosions_init ();
+
 //    stars_init ();
 }
 
@@ -41,6 +42,7 @@ void game_start (void)
     game_init ();
     gamestate = GAME_RUNNING;
     Mix_PlayMusic (music[MUSIC_CYBERRID], -1);
+    playtime_start = SDL_GetTicks ();
 }
 
 static void gameover_init (void)
@@ -60,6 +62,9 @@ static void gameover_init (void)
     render_score ();
     //msg_draw ();
     Mix_HaltMusic ();
+    total_playtime += (SDL_GetTicks () - playtime_start) / 1000;
+
+    fprintf (stdout, "Total playtime: %ld\n", total_playtime);
     fprintf (stdout, "Score: %ld\n", player.score);
     fprintf (stdout, "Shots fired: %ld\n", player.shots_fired);
     fprintf (stdout, "Hits: %ld\n", player.hits);

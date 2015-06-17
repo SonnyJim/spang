@@ -302,6 +302,6 @@ void bonus_draw (void)
 
     if (found && bonus_level_time > 0)
         bonus_level_time--;
-    if (bonus_level_time <= 0 && !found)
+    else if (bonus_level_time <= 0 && !found)
         bonus_level_stop ();
 }
