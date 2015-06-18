@@ -115,6 +115,13 @@ int render_score (void)
         render_string_centre (score_str, TextHeight, red, font3);
     else
         render_string_centre (score_str, TextHeight, green, font3);
+
+    if (paused)
+        render_string_right ("Paused", 25, red, font1);
+    else if (record_state == REC_REC)
+        render_string_right ("Record", 25, red, font1);
+    else if (record_state == REC_PLAYING)
+        render_string_right ("Playback", 25, green, font1);
     return 0;
 }
 

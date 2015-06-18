@@ -2,7 +2,6 @@
 Sort out ball gravity based on player speed
 Finish centipede enemy
 Build more levels
-Online leader boards
 Close/free files/devices on quit
 */
 
@@ -34,12 +33,10 @@ int main (int argc, char *argv[])
         return 1;
     }
 
-
     if (config_load ())
     {
         fprintf (stderr, "Error loading config\n");
     }
-
 
     hiscore_init ();
     gamestate = GAME_AMODE;

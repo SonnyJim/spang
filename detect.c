@@ -86,7 +86,7 @@ void detect_bullet (int num)
 {
     int i;
 
-    if (bonus_level_active)
+    if (bonus_level_active && level_change_timer == 0)
     {
         for (i = 0; i < BONUS_BARRELS; i++)
         {

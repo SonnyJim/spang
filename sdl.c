@@ -11,9 +11,9 @@ static void input_read_pause (void)
     if (gamestate == GAME_RUNNING)
     {
         if (paused)
-            paused = 0;
+            game_unpause ();
         else
-            paused = 1;
+            game_pause ();
     }
 }
 
@@ -211,7 +211,7 @@ void sdl_read_input (void)
                 switch (event.key.keysym.sym)
                 {
                     case SDLK_ESCAPE:
-                        paused = 0;
+                        game_unpause ();
                         if (gamestate == GAME_RUNNING)
                             gamestate = GAME_OVER;
                         else if (gamestate == GAME_CONFIG)
@@ -229,9 +229,15 @@ void sdl_read_input (void)
                         break;
                     case SDLK_m:
                         if ( Mix_VolumeMusic(-1) == 0)
+                        {
+                            msg_show ("Music on", screen_width / 2, screen_height /2, 2, font1, ALIGN_CENTRE, green);
                             Mix_VolumeMusic (128);
+                        }
                         else
+                        {
+                            msg_show ("Music off", screen_width / 2, screen_height /2, 2, font1, ALIGN_CENTRE, green);
                             Mix_VolumeMusic(0);
+                        }
                         break;
                     case SDLK_LCTRL:
                         fire = 1;
@@ -294,22 +300,55 @@ void sdl_read_input (void)
                 break;
         }
     }
+
+    if (pause)
+        input_read_pause ();
+    if (paused)
+        return;
+        frame_counter++;
+    if (record_state == REC_PLAYING)
+    {
+        playback_frame ();
+        if ((input_mask & REC_FIRE) == REC_FIRE)
+            input_read_fire ();
+        if ((input_mask & REC_BOMB) == REC_BOMB)
+            input_read_smartbomb ();
+        if ((input_mask & REC_LEFT) == REC_LEFT)
+            input_read_left ();
+        else if ((input_mask & REC_RIGHT) == REC_RIGHT)
+            input_read_right ();
+        return;
+    }
+
+    input_mask = 0;
     if (fire)
+    {
+        input_mask |= REC_FIRE;
         input_read_fire ();
+    }
     if (smartbomb)
+    {
+        input_mask |= REC_BOMB;
         input_read_smartbomb ();
+    }
+
     if (left && !right)
+    {
+        input_mask |= REC_LEFT;
         input_read_left ();
+    }
     else if (right && !left)
+    {
+        input_mask |= REC_RIGHT;
         input_read_right ();
+    }
 
     if (up && !down)
         input_read_up ();
     else if (down && !up)
         input_read_down ();
-
-    if (pause)
-        input_read_pause ();
+    if (record_state == REC_REC && gamestate == GAME_RUNNING)
+        record_frame ();
 }
 
 int sdl_init (void)
@@ -330,13 +369,15 @@ int sdl_init (void)
         return 1;
     }
 
-  //  screen_height = videomode.h;
-  //  screen_width = videomode.w;
+    screen_height = videomode.h;
+    screen_width = videomode.w;
 
     screen_width = 1024;
     screen_height = 600;
 
     window = SDL_CreateWindow("Spang!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, 0);
+    //window = SDL_CreateWindow("Spang!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_FULLSCREEN);
+
     SDL_ShowCursor(SDL_DISABLE);
 
     if (window == NULL)

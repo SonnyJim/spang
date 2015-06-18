@@ -6,6 +6,7 @@ Uint16 centerx;
 Uint16 centery;
 int init = 0;
 int bg_rotate = 0;
+int bg_rotate_direction = 0;
 float theta;
 
 SDL_Surface *stars_srf;
@@ -72,10 +73,10 @@ void stars_toggle_rotation (void)
 {
     if (!bg_rotate)
         return;
-    if (bg_rotate == 1)
-        bg_rotate = 2;
+    if (bg_rotate_direction)
+        bg_rotate_direction = 0;
     else
-        bg_rotate = 1;
+        bg_rotate_direction = 1;
 }
 
 void stars_draw (void)
@@ -102,13 +103,10 @@ void stars_draw (void)
 
         if (bg_rotate == 1)
         {
-            theta += rotate_speed;
-            //if (theta > 360)
-            //    theta = 0;
-        }
-        else if (bg_rotate == 2)
-        {
-            theta -= rotate_speed;
+            if (bg_rotate_direction)
+                theta += rotate_speed;
+            else
+                theta -= rotate_speed;
         }
 
         if (gamestate == GAME_AMODE || GAME_HSENTRY)

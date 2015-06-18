@@ -163,11 +163,15 @@ void score_receive (char* initials, long score)
         {
             if (scores[i].score >= score)
             {
-                fprintf (stdout, "Not inserting score, lower that previous 20 scores\n");
+                fprintf (stdout, "Not inserting score, lower than previous 10 scores\n");
                 return;
             }
             else
-                break;
+            {
+                fprintf (stdout, "Replacing lowest score\n");
+                scores[i].score = score;
+                return;
+            }
         }
     }
 

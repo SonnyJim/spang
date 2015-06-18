@@ -1,7 +1,7 @@
 #include "spang.h"
 #define MAX_POWERUPS 64
-#define POWERUP_DISPLAY_TIME 2000
-#define MEGASHOT_TIME 6000
+#define POWERUP_DISPLAY_TIME 200
+#define MEGASHOT_TIME 400
 #define NUM_POWERUPS 5
 
 Mix_Chunk *health1;
@@ -97,7 +97,7 @@ static void powerup_slow (void)
 static void powerup_megashot (void)
 {
     Mix_PlayChannel (SND_SIREN, siren, 0);
-    megashot_timer = SDL_GetTicks ();
+    megashot_timer = frame_counter;
     megashot_active = 1 ;
 }
 
@@ -137,8 +137,8 @@ void powerups_update (int i)
     if (powerups[i].rect.y + 5 < (screen_height - powerups[i].rect.h))
         powerups[i].rect.y += 5;
     else if (powerups[i].time == 0)
-        powerups[i].time = SDL_GetTicks ();
-    else if (powerups[i].time + POWERUP_DISPLAY_TIME - 1000 < SDL_GetTicks ())
+        powerups[i].time = frame_counter;
+    else if (powerups[i].time + POWERUP_DISPLAY_TIME - 100 < frame_counter)
         powerups[i].rect.h -= 1;
 }
 
@@ -159,9 +159,10 @@ void powerups_draw (void)
     {
         if (powerups[i].type != POWERUP_NONE)
         {
-
+            if (powerups[i].type == POWERUP_MEGASHOT && bonus_level_active)
+                powerups[i].type = POWERUP_NONE;
             if (powerups[i].time != 0 &&
-                powerups[i].time + POWERUP_DISPLAY_TIME < SDL_GetTicks ())
+                powerups[i].time + POWERUP_DISPLAY_TIME < frame_counter)
             {
                 powerups[i].type = POWERUP_NONE;
                 break;
@@ -175,12 +176,12 @@ void powerups_draw (void)
             }
         }
     }
-    if (megashot_active && megashot_timer + MEGASHOT_TIME > SDL_GetTicks ())
+    if (megashot_active && megashot_timer + MEGASHOT_TIME > frame_counter)
     {
         Mix_PauseMusic ();
         combo_set_level (4);
     }
-    else if (megashot_active && megashot_timer + MEGASHOT_TIME < SDL_GetTicks ())
+    else if (megashot_active && megashot_timer + MEGASHOT_TIME < frame_counter)
     {
         powerup_megashot_disable ();
     }
@@ -189,16 +190,17 @@ void powerups_draw (void)
 void powerup_smartbomb (void)
 {
     int i;
-    if (player.smartbomb == 0)
+    if (player.smartbomb == 0 || bonus_level_active || gamestate != GAME_RUNNING)
         return;
     msg_show ("KABLAMO", 0, (screen_height / 2) - 100, 1, font2, ALIGN_CENTRE, red);
     player.smartbomb = 0;
+    explosion_superbomb (screen_width /2, screen_height / 2);
     for (i = 0; i < MAX_BALLS;i++)
     {
         if (balls[i].size > 0)
         {
             player.shots_fired_round++;
-            explosion_superbomb (balls[i].rect.x, balls[i].rect.y);
+
             balls[i].hits = balls[i].strength;
             ball_hit(i);
         }

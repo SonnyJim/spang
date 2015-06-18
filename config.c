@@ -1,6 +1,6 @@
 #include "spang.h"
 #define CONFIG_FILE "spang.cfg"
-#define NUM_OPTIONS 4
+#define NUM_OPTIONS 5
 #define NUM_INPUT_OPTS 7
 
 SDL_Color color;
@@ -16,6 +16,7 @@ enum
 {
     CFG_EXPLOSION,
     CFG_ROTATE,
+    CFG_RECORD,
     CFG_JOYSTICK,
     CFG_EXIT
 };
@@ -26,6 +27,7 @@ struct config_opt
     int *ip; //Pointer to int
     char *option1;
     char *option2;
+    char *option3;
 };
 
 struct config_opt config_options[NUM_OPTIONS];
@@ -33,24 +35,34 @@ struct config_opt config_options[NUM_OPTIONS];
 void config_init (void)
 {
     config_options[0].text = "Explosion type";
-    config_options[0].option1 = "Cool";
-    config_options[0].option2 = "Red";
+    config_options[0].option1 = "Red";
+    config_options[0].option2 = "Cool";
+    config_options[0].option3 = "";
     config_options[0].ip = &explosion_type;
 
     config_options[1].text = "Background";
     config_options[1].option1 = "No Rotate";
     config_options[1].option2 = "Rotate";
+    config_options[1].option3 = "";
     config_options[1].ip = &bg_rotate;
 
-    config_options[2].text = "Config Joystick";
-    config_options[2].option1 = "Not Implemented";
-    config_options[2].option2 = "";
-    config_options[2].ip = NULL;
+    config_options[2].text = "Recording";
+    config_options[2].option1 = "None";
+    config_options[2].option2 = "Record";
+    config_options[2].option3 = "Playback";
+    config_options[2].ip = &record_state;
 
-    config_options[3].text = "Exit";
-    config_options[3].option1 = "";
+    config_options[3].text = "Config Joystick";
+    config_options[3].option1 = "Not Implemented";
     config_options[3].option2 = "";
+    config_options[3].option3 = "";
     config_options[3].ip = NULL;
+
+    config_options[4].text = "Exit";
+    config_options[4].option1 = "";
+    config_options[4].option2 = "";
+    config_options[4].option3 = "";
+    config_options[4].ip = NULL;
 
     //Init explosions so we can test them
     explosions_init ();
@@ -223,6 +235,12 @@ void config_fire (void)
         case CFG_JOYSTICK:
             config_input_start ();
             break;
+        case CFG_RECORD:
+            if (record_state != REC_PLAY)
+                record_state++;
+            else
+                record_state = REC_STOP;
+            break;
         default:
             break;
     }
@@ -269,10 +287,12 @@ void config_loop (void)
 
         if (config_options[i].ip != NULL)
         {
-            if (*config_options[i].ip != 0)
+            if (*config_options[i].ip == 0)
                 sprintf (buffer, "%s", config_options[i].option1);
-            else
+            else if (*config_options[i].ip == 1)
                 sprintf (buffer, "%s", config_options[i].option2);
+            else if (*config_options[i].ip == 2)
+                sprintf (buffer, "%s", config_options[i].option3);
             render_string (buffer, (screen_width / 2) + 10, 100 + (i * 30), color, font3);
         }
     }

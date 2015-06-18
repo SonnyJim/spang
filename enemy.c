@@ -1,7 +1,7 @@
 #include "spang.h"
 //Delay between firing normal bullets
-#define ENEMY_BULLET_NORMAL_DELAY 400
-#define ENEMY_BULLET_HOMING_DELAY 1500
+#define ENEMY_BULLET_NORMAL_DELAY 60
+#define ENEMY_BULLET_HOMING_DELAY 120
 #define GRAVITY_BALL 2
 
 void enemy_bullet_add (int xpos, int ypos, bullet_t type)
@@ -175,17 +175,17 @@ static void enemy_bullet_check_to_fire (int i)
     switch (enemies[i].bullet)
     {
         case BULLET_NORMAL:
-            if (enemies[i].time + ENEMY_BULLET_NORMAL_DELAY < SDL_GetTicks ()
+            if (enemies[i].time + ENEMY_BULLET_NORMAL_DELAY < frame_counter
                 && check_axis_x (enemies[i].rect, player.rect))
             {
-                enemies[i].time = SDL_GetTicks ();
+                enemies[i].time = frame_counter;
                 enemy_bullet_add (enemies[i].rect.x + (enemies[i].rect.w /2), enemies[i].rect.y, BULLET_NORMAL);
             }
             break;
         case BULLET_HOMING:
-            if (enemies[i].time + ENEMY_BULLET_HOMING_DELAY < SDL_GetTicks () )
+            if (enemies[i].time + ENEMY_BULLET_HOMING_DELAY < frame_counter )
             {
-                enemies[i].time = SDL_GetTicks ();
+                enemies[i].time = frame_counter;
                 enemy_bullet_add (enemies[i].rect.x + (enemies[i].rect.w /2), enemies[i].rect.y, BULLET_HOMING);
             }
             break;

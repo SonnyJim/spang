@@ -7,14 +7,13 @@ int hsentry_index;
 int hsentry_letter;
 
 int hsentry_initted = 0;
+int hsentry_playback = 0;
 
 static void hsentry_update_letter (void)
 {
     hiscores[hiscore_position].initials[hsentry_index] = hsentry_letters[hsentry_letter];
     Mix_PlayChannel (-1, comboup, 0);
 }
-
-
 
 void hsentry_fire (void)
 {
@@ -70,6 +69,12 @@ static void hsentry_init (void)
 
 void hsentry_loop (void)
 {
+    if (hsentry_playback)
+    {
+        gamestate = GAME_AMODE;
+        hsentry_playback = 0;
+        return;
+    }
     if (!hsentry_initted)
         hsentry_init ();
     amode_draw ();

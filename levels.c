@@ -33,8 +33,10 @@ void level_four (void)
 void level_five (void)
 {
     int i;
-    for (i = 0; i < player.level; i ++)
-        ball_add (5, screen_width / 2 + (rand () % 200) - 100, 200 + (rand() % 50), player.speed, rand () % 1, 1);
+    for (i = 0; i < player.level - 1; i ++)
+    {
+        ball_add (4 + player.laps, ((screen_width / 2) + (i * 15)) - (i * 30), screen_height / 2, player.speed, 0, 1);
+    }
 }
 
 void level_eight (void)
@@ -45,7 +47,7 @@ void level_eight (void)
 
 void level_nine (void)
 {
-    ball_add (7, screen_width / 2, screen_height / 2, player.speed, 0, 6);
+    ball_add (7, screen_width / 2, screen_height / 2, player.speed, 0, 6 + player.laps);
 }
 
 void level_ten (void)
@@ -61,13 +63,13 @@ void level_ten (void)
 
 void level_eleven (void)
 {
-    enemy_add (ENEMY_BALL, BULLET_NONE, (screen_width / 2) - ((BALL_WIDTH * 4)/2), 140, 3, 0, 1, 4);
+    enemy_add (ENEMY_BALL, BULLET_NONE, (screen_width / 2) - ((BALL_WIDTH * 4)/2), 140, 3, 0, 1, 4 + player.laps);
 }
 
 void level_twelve (void)
 {
-    enemy_add (ENEMY_BALL, BULLET_NONE, 20, 100, 3, 0, 1, 4);
-    enemy_add (ENEMY_BALL, BULLET_NONE, screen_width, 100, -3, 0, 1, 4);
+    enemy_add (ENEMY_BALL, BULLET_NONE, 20, 100, 3, 0, 1, 4 + player.laps);
+    enemy_add (ENEMY_BALL, BULLET_NONE, screen_width, 100, -3, 0, 1, 4 + player.laps);
 }
 
 void level_thirteen (void)

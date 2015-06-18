@@ -17,13 +17,15 @@ void bullets_init (void)
         bullets[i].rect.w = 10;
         bullets[i].rect.h = 10;
     }
+    bullet_timer = 0;
+    bullets_on_screen = 0;
 }
 
 void bullet_add (void)
 {
     int i;
     //Don't allow adding any more bullets
-    if (bullet_timer + player.bullet_delay > SDL_GetTicks () || bullets_on_screen >= player.bullet_max)
+    if (bullet_timer + player.bullet_delay > frame_counter|| bullets_on_screen >= player.bullet_max)
         return;
     player.shots_fired++;
     player.shots_fired_round++;
@@ -43,7 +45,7 @@ void bullet_add (void)
             break;
         }
     }
-    bullet_timer = SDL_GetTicks ();
+    bullet_timer = frame_counter;
 }
 
 void bullet_remove (int num)

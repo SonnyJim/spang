@@ -180,6 +180,8 @@ static void bonus_barrel_update (int num)
 
 void bonus_barrel_hit (struct barrel_t *barrel, struct bullet_t *bullet)
 {
+    if (level_change_timer)
+        return;
     if (++barrel->hits > barrel->strength)
     {
         Mix_PlayChannel (SND_EXPLOSION, explosion, 0 );
@@ -237,6 +239,7 @@ void bonus_level_start (void)
     player.bonus_level++;
     level_change_timer = 3 * 60;
     bonus_barrel_add (screen_width / 2, 100, 3, 0, 7);
+    //Find megashot powerup and remove it
 
 }
 

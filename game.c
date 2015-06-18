@@ -43,6 +43,16 @@ void game_start (void)
     gamestate = GAME_RUNNING;
     Mix_PlayMusic (music[MUSIC_CYBERRID], -1);
     playtime_start = SDL_GetTicks ();
+    old_input_mask = 0;
+    input_mask = 0;
+    frame_counter = 0;
+    if (record_state == REC_REC)
+        record_start ();
+    else if (record_state == REC_PLAY)
+        playback_start ();
+
+    //Guarenteed to be random, Stern says so!
+    srand (69696969);
 }
 
 static void gameover_init (void)
@@ -88,6 +98,11 @@ static void gameover_init (void)
 
 void gameover_loop (void)
 {
+    if (record_state == REC_REC)
+        record_stop ();
+    else if (record_state == REC_PLAYING)
+        playback_stop ();
+
     if (gameover_timer == 0)
         gameover_init ();
     else if (--gameover_timer == 1)

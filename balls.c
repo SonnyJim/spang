@@ -123,6 +123,7 @@ void ball_hit (int ball_num)
 
 void ball_init (int num)
 {
+    /*
     balls[num].rect.x = rand () % screen_width;
     balls[num].rect.y = rand () % screen_height;
     if (rand() % 2)
@@ -134,7 +135,7 @@ void ball_init (int num)
         balls[num].yvel = 5;
     else
         balls[num].yvel = -5;
-
+*/
     balls[num].angle = 0;
     balls[num].angle_vel = (rand () % 6) - 10;
     balls[num].size = 0;

@@ -23,6 +23,8 @@
 #include "hsentry.h"
 #include "powerup.h"
 #include "config.h"
+#include "record.h"
+#include "random.h"
 
 extern int screen_width;
 extern int screen_height;
@@ -119,4 +121,6 @@ void stars_toggle_rotation (void);
 int input_keyrepeat (void);
 void input_joystick_init (void);
 void input_joystick_close (void);
+
+int network_send_score (char* initials, long score);
 

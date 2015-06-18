@@ -21,7 +21,7 @@ void player_init (void)
     player.rect.h = 50;
     player.rect.x = screen_width / 2 - (player.rect.w / 2);
     player.rect.y = screen_height - player.rect.h;
-    player.bullet_delay = 200;
+    player.bullet_delay = 10;
     player.bullet_max = 5;
     player.bullet_size = 10;
     player.health = 100;
@@ -37,6 +37,7 @@ void player_init (void)
     player.last_size = 0;
     player.score = 0;
     score_bonus = 10;
+    player.combo_time = 0;
 
     player_hitrect1.w = 14;
     player_hitrect1.h = 25;
@@ -50,6 +51,7 @@ void player_init (void)
     player.bonus_level = 0;
 
     player.laps = 0;
+    combo_set_level (player.combo_level);
 }
 
 void player_update_hitrect (void)
@@ -83,7 +85,7 @@ void player_score (int size)
 
     player.score += score_bonus;
     if (score_bonus == 800)
-        powerup_add (POWERUP_COIN, rand () % screen_width, 0);
+        powerup_add (POWERUP_COIN, player.rect.x, 0);
 
 }
 
