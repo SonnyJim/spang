@@ -7,6 +7,7 @@ SDL_Texture *bonus_tex;
 
 #define NUM_TARGETS 4
 
+int bonus_perfect;
 
 //TODO Award bonus pojnts for lower targets, health for upper targets?
 
@@ -171,6 +172,7 @@ static void bonus_barrel_update (int num)
     {
         if (bonus_level_time > 60 * 5)
             bonus_level_time -= 60 * 5;
+        bonus_perfect = 0;
         bonus_barrel_remove (num);
         bonus_barrel_add (screen_width / 2, 100, 3, 0, 5);
         Mix_PlayChannel (SND_DEATH, slowdown, 0);
@@ -189,6 +191,7 @@ void bonus_barrel_hit (struct barrel_t *barrel, struct bullet_t *bullet)
         barrel->active = 0;
         player.score += 500;
         msg_show ("500", barrel->rect.x, barrel->rect.y, 2, font3, ALIGN_TCENTRE, red);
+        bonus_perfect = 0;
         bonus_barrel_add (screen_width / 2, 100, 3, 0, barrel->strength + 1);
         return;
     }
@@ -239,12 +242,20 @@ void bonus_level_start (void)
     player.bonus_level++;
     level_change_timer = 3 * 60;
     bonus_barrel_add (screen_width / 2, 100, 3, 0, 7);
+    bonus_perfect = 1;
     //Find megashot powerup and remove it
 
 }
 
 void bonus_level_stop (void)
 {
+    if (bonus_perfect)
+    {
+        msg_show ("PERFECT", screen_width /2, screen_height - 200, 3, font2, ALIGN_CENTRE, red);
+        msg_show ("50000", player.rect.x + (player.rect.w / 2), player.rect.y - 20, 3, font3, ALIGN_TCENTRE, white);
+
+        player.score += 50000;
+    }
     bonus_restore_player ();
     bonus_level_active = 0;
     level_up ();

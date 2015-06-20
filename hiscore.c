@@ -13,9 +13,9 @@ void hiscore_draw (void)
             color = red;
         else
             color = green;
-        render_string (hiscores[i].initials, (screen_width / 2) - 120, 100 + (i * 30), color, font1);
+        render_string (hiscores[i].initials, (screen_width / 2) - 120, 120 + (i * 30), color, font1);
         sprintf (buffer, "%ld", hiscores[i].score);
-        render_string (buffer, (screen_width / 2) + 10, 100 + (i * 30), color, font1);
+        render_string (buffer, (screen_width / 2) + 10, 120 + (i * 30), color, font1);
     }
 }
 

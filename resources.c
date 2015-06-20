@@ -15,6 +15,7 @@ SDL_Texture *slow_tex = NULL;
 SDL_Texture *megashot_tex = NULL;
 
 SDL_Texture *enemy_tex = NULL;
+SDL_Texture *logo_tex = NULL;
 
 Mix_Chunk *laser1 = NULL;
 Mix_Chunk *explosion = NULL;
@@ -33,6 +34,7 @@ Mix_Music *music[NUM_MUSIC];
 TTF_Font *font1 = NULL;
 TTF_Font *font2 = NULL;
 TTF_Font *font3 = NULL;
+TTF_Font *font4 = NULL;
 
 int texture_error = 0;
 
@@ -133,6 +135,7 @@ int textures_load (int num)
 
     bonus_tex = texture_load_img ("data/gfx/default/barrel.png");
     balloon_tex = texture_load_img ("data/gfx/default/ball.png");
+    logo_tex = texture_load_img ("data/gfx/default/logo.png");
 
     //Need to call this to update the pointers to powerup textures
     powerups_textures_init ();
@@ -165,13 +168,12 @@ int fonts_init (void)
     font1 = TTF_OpenFont( "data/fonts/8bitwonder.ttf", 20 );
     font2 = TTF_OpenFont( "data/fonts/8bitwonder.ttf", 40 );
     font3 = TTF_OpenFont( "data/fonts/8bitwonder.ttf", 12 );
-    if (font1 == NULL)
+    font4 = TTF_OpenFont ("data/fonts/PressStart2P.ttf", 20);
+    if (font1 == NULL || font2 == NULL || font3 == NULL || font4 == NULL)
     {
-        fprintf (stderr, "Error loading font1\n");
+        fprintf (stderr, "Error loading fonts: %s\n", TTF_GetError ());
         return 1;
     }
-    //score_rect.x = 0;
-    //score_rect.y = 0;
     return 0;
 }
 
@@ -195,10 +197,10 @@ static int music_load (char *file, music_t num)
 int music_init (void)
 {
     int ret;
-    ret = music_load ("data/sfx/music/t2kremix.mod", MUSIC_T2K);
-    ret = music_load ("data/sfx/music/bubble_bobble_tribute.xm", MUSIC_BUBBLEBOBBLE);
+    ret = music_load ("data/sfx/music/it-goes-to-11.mp3", MUSIC_T2K);
+    ret = music_load ("data/sfx/music/ChipsDipsChainsWhips.mp3", MUSIC_BUBBLEBOBBLE);
     ret = music_load ("data/sfx/music/cyberrid.mod", MUSIC_CYBERRID);
-    //ret = music_load ("data/sfx/music/pacman.mod", MUSIC_PACMAN);
+    ret = music_load ("data/sfx/music/Dancehalltechno.mp3", MUSIC_MENU);
 
     return ret;
 }

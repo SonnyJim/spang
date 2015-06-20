@@ -9,7 +9,6 @@ typedef enum
     MUSIC_MENU,
     MUSIC_T2K,
     MUSIC_BUBBLEBOBBLE,
-    MUSIC_PACMAN,
     MUSIC_CYBERRID
 
 } music_t;
@@ -32,3 +31,5 @@ extern Mix_Chunk *alarmreverse;
 extern Mix_Chunk *tink;
 extern Mix_Chunk *siren;
 extern Mix_Chunk *snd_barrel;
+
+extern SDL_Texture *logo_tex;

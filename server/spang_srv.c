@@ -82,7 +82,8 @@ static int receive_score (void *ptr)
 				printf("Host connected: %x %d\n", SDLNet_Read32(&remoteIP->host), SDLNet_Read16(&remoteIP->port));
 			else
 				fprintf(stderr, "SDLNet_TCP_GetPeerAddress: %s\n", SDLNet_GetError());
- 
+            
+            fprintf (stdout, "IP: %s\n", SDLNet_ResolveIP (remoteIP));
 			if (SDLNet_TCP_Recv(csd, buffer, BUFFLEN) > 0)
 			{
                 strncpy (initials, buffer, 3);

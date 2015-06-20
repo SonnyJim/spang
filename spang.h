@@ -108,6 +108,8 @@ void msg_show (char *msg, int xpos, int ypos, int time, TTF_Font *font, align_t 
 extern TTF_Font *font1;
 extern TTF_Font *font2;
 extern TTF_Font *font3;
+extern TTF_Font *font4;
+
 extern SDL_Color red;
 extern SDL_Color green;
 extern SDL_Color blue;

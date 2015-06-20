@@ -17,7 +17,7 @@ static void hsentry_update_letter (void)
 
 void hsentry_fire (void)
 {
-    if (input_keyrepeat ())
+    if (input_keyrepeat () || hsentry_playback)
         return;
     Mix_PlayChannel (SND_LASER, speedup, 0);
     if (hsentry_index < 2)
@@ -69,12 +69,6 @@ static void hsentry_init (void)
 
 void hsentry_loop (void)
 {
-    if (hsentry_playback)
-    {
-        gamestate = GAME_AMODE;
-        hsentry_playback = 0;
-        return;
-    }
     if (!hsentry_initted)
         hsentry_init ();
     amode_draw ();

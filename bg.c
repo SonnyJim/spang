@@ -9,6 +9,8 @@ int bg_rotate = 0;
 int bg_rotate_direction = 0;
 float theta;
 
+extern int left;
+extern int right;
 SDL_Surface *stars_srf;
 
 /*star struct*/
@@ -84,6 +86,8 @@ void stars_draw (void)
     int i, tempx, tempy;
     float rotate_speed, px, py;
 
+    if (bg_rotate == 2)
+        return;
     if (!init)
     {
         stars_init ();
@@ -108,6 +112,7 @@ void stars_draw (void)
             else
                 theta -= rotate_speed;
         }
+
 
         if (gamestate == GAME_AMODE || GAME_HSENTRY)
         {

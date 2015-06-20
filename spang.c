@@ -41,7 +41,6 @@ int main (int argc, char *argv[])
     hiscore_init ();
     gamestate = GAME_AMODE;
     running = 1;
-
     while (running)
     {
         sdl_read_input ();
@@ -68,6 +67,9 @@ int main (int argc, char *argv[])
                 case GAME_CONFIG:
                 case GAME_CONFIG_INPUT:
                     config_loop ();
+                    break;
+                case GAME_SELECT_RECORD:
+                    playback_loop ();
                     break;
             }
         }

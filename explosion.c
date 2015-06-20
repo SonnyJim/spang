@@ -80,25 +80,35 @@ void explosions_init (void)
 void explosion_superbomb (int xpos, int ypos)
 {
     int i, j;
-    for (i = 0; i < 5; i++)
+    for (i = 0; i < 32; i++)
     {
-        for (j = 0; j < 5; j++)
+        for (j = 0; j < 4; j++)
         {
             if (explosions[i][j].active == 0)
             {
-                explosions[i][j].particle_rect.x = xpos;
+                explosions[i][j].particle_rect.x = xpos; //- 30 + (rand () % 60);
                 explosions[i][j].particle_rect.y = ypos;
 
                 explosions[i][j].xvel = (rand() %40) - 20;
-                explosions[i][j].yvel = (rand() % 10) - 10;
+                explosions[i][j].yvel = (rand() % 10) - 20;
 
-                explosions[i][j].colour.r = (rand () % 255);
-                explosions[i][j].colour.g = (rand () % 255);
-                explosions[i][j].colour.b = (rand () % 255);
+                if (!explosion_type)
+                {
 
+                    explosions[i][j].colour.r = colors[explosions[i][j].colourindex].r;
+                    explosions[i][j].colour.g = colors[explosions[i][j].colourindex].g;
+                    explosions[i][j].colour.b = colors[explosions[i][j].colourindex].b;
+                }
+                else
+                {
+                    explosions[i][j].colour.r = (rand () % 255);
+                    explosions[i][j].colour.g = (rand () % 255);
+                    explosions[i][j].colour.b = (rand () % 255);
+                }
                 explosions[i][j].active = 1;
 
-                explosions[i][j].particle_rect.w = (rand () % (40)) + 20;
+                explosions[i][j].particle_rect.w = (rand () % (40)) + 30;
+
                 //explosions[i][j].colour = { rand() % 255, rand() % 255, rand() % 255};
                 //return;
             }
@@ -139,10 +149,10 @@ void explosion_add (int xpos, int ypos)
                     explosions[i][j].xvel = rand() % 20 - 10;
                     explosions[i][j].yvel = rand() % 20 - 10;
                 }
-
+                explosions[i][j].colourindex = (rand() %20) + 90;
                 if (!explosion_type)
                 {
-                    explosions[i][j].colourindex = (rand() %20) + 90;
+
                     explosions[i][j].colour.r = colors[explosions[i][j].colourindex].r;
                     explosions[i][j].colour.g = colors[explosions[i][j].colourindex].g;
                     explosions[i][j].colour.b = colors[explosions[i][j].colourindex].b;
@@ -189,7 +199,8 @@ static void explosion_update (int i, int j)
             explosions[i][j].particle_rect.w += 1;
     explosions[i][j].particle_rect.h = explosions[i][j].particle_rect.w;
     if (explosions[i][j].particle_rect.x <= 0 || explosions[i][j].particle_rect.x >= screen_width
-        || explosions[i][j].particle_rect.y >= screen_height)
+        || explosions[i][j].particle_rect.y >= screen_height
+        || explosions[i][j].colourindex <= 10)
         explosions[i][j].active = 0;
 }
 

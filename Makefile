@@ -6,7 +6,7 @@ LDLIBS = $(SDL2_LDFLAGS) -lSDL2_mixer -lSDL2_image -lSDL2_ttf -lm -lSDL2_net
 
 OBJS =  spang.o balls.o combo.o overlay.o player.o powerup.o sdl.o bullets.o explosion.o bullets.o enemy.o detect.o 
 OBJS += levels.o level.o resources.o hiscore.o bg.o hsentry.o game.o amode.o bonus.o config.o input.o record.o random.o
-OBJS += network.o
+OBJS += network.o playback.o 
 
 spang: $(OBJS)
 	@echo [link]

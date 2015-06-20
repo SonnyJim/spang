@@ -41,18 +41,18 @@ void game_start (void)
     bonus_level_active = 0;
     game_init ();
     gamestate = GAME_RUNNING;
-    Mix_PlayMusic (music[MUSIC_CYBERRID], -1);
-    playtime_start = SDL_GetTicks ();
+
     old_input_mask = 0;
     input_mask = 0;
     frame_counter = 0;
     if (record_state == REC_REC)
         record_start ();
-    else if (record_state == REC_PLAY)
-        playback_start ();
+
+    playtime_start = SDL_GetTicks ();
+    Mix_PlayMusic (music[MUSIC_CYBERRID], -1);
 
     //Guarenteed to be random, Stern says so!
-    srand (69696969);
+    random_seed = 69696969;
 }
 
 static void gameover_init (void)
@@ -82,7 +82,7 @@ static void gameover_init (void)
     fprintf (stdout, "Ratio: %.3f\n", hitratio);
     fprintf (stdout, "Balls destroyed: %ld\n", player.destroyed_balls);
     Mix_PlayChannel( -1, death, 0 );
-    if (hiscore_check ())
+    if (hiscore_check () && !hsentry_playback)
     {
         //msg_show ("New Hiscore", screen_width / 2, screen_height / 2, 5, font2, ALIGN_CENTRE, red);
         render_string_centre ("New Hiscore", (screen_height / 2) - 100, red, font2);
@@ -91,6 +91,7 @@ static void gameover_init (void)
     else
         render_string_centre ("Game Over", (screen_height / 2) - 100, red, font2);
 
+    hsentry_playback = 0;
     gameover_timer = 4 * 60;
     //Call game_loop once to draw everything
 

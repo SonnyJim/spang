@@ -55,6 +55,9 @@ static void input_read_left (void)
         case GAME_CONFIG:
             config_left ();
             break;
+        case GAME_SELECT_RECORD:
+            playback_input_left ();
+            break;
         default:
             break;
     }
@@ -73,6 +76,9 @@ static void input_read_right (void)
             break;
         case GAME_CONFIG:
             config_right ();
+            break;
+        case GAME_SELECT_RECORD:
+            playback_input_right ();
             break;
         default:
             break;
@@ -95,6 +101,9 @@ static void input_read_fire (void)
             break;
         case GAME_CONFIG:
             config_fire ();
+            break;
+        case GAME_SELECT_RECORD:
+            playback_input_fire ();
             break;
         default:
             break;
@@ -220,6 +229,8 @@ void sdl_read_input (void)
                             gamestate = GAME_CONFIG;
                         else if (gamestate == GAME_AMODE)
                             running = 0;
+                        else if (gamestate == GAME_SELECT_RECORD)
+                            playback_quit ();
                         break;
                     case SDLK_h:
                         if (draw_hitbox)
@@ -305,6 +316,7 @@ void sdl_read_input (void)
         input_read_pause ();
     if (paused)
         return;
+    if (gamestate == GAME_RUNNING)
         frame_counter++;
     if (record_state == REC_PLAYING)
     {

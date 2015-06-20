@@ -74,9 +74,9 @@ void level_up (void)
         fprintf (stdout, "Level %i: Stage time: %i\n", player.level, (frame_counter - player.stage_time) / 100);
     }
     if (player.level % 3 == 0)
-        powerup_add (POWERUP_SLOW, randy (screen_width), 0);
+        powerup_add (POWERUP_SLOW, randy (0, screen_width), 0);
     if (player.level % 5 == 0)
-        powerup_add (POWERUP_MEGASHOT, randy (screen_width), 0);
+        powerup_add (POWERUP_MEGASHOT, randy (0, screen_width), 0);
     if (player.level % 4 == 0)
     {
         msg_show ("Supertapper recharge", 0, 130, 3, font1, ALIGN_CENTRE, green);

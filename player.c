@@ -85,7 +85,7 @@ void player_score (int size)
 
     player.score += score_bonus;
     if (score_bonus == 800)
-        powerup_add (POWERUP_COIN, player.rect.x, 0);
+        powerup_add (POWERUP_COIN, randy (0, screen_width), 0);
 
 }
 

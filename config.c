@@ -36,14 +36,14 @@ void config_init (void)
 {
     config_options[0].text = "Explosion type";
     config_options[0].option1 = "Red";
-    config_options[0].option2 = "Cool";
+    config_options[0].option2 = "Confetti";
     config_options[0].option3 = "";
     config_options[0].ip = &explosion_type;
 
     config_options[1].text = "Background";
     config_options[1].option1 = "No Rotate";
     config_options[1].option2 = "Rotate";
-    config_options[1].option3 = "";
+    config_options[1].option3 = "None";
     config_options[1].ip = &bg_rotate;
 
     config_options[2].text = "Recording";
@@ -219,10 +219,10 @@ void config_fire (void)
             gamestate = GAME_AMODE;
             break;
         case CFG_ROTATE:
-            if (bg_rotate)
-                bg_rotate = 0;
+            if (bg_rotate < 2)
+                bg_rotate++;
             else
-                bg_rotate = 1;
+                bg_rotate = 0;
             break;
         case CFG_EXPLOSION:
             trippy_mode = 3;

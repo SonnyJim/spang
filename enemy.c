@@ -108,11 +108,6 @@ void enemy_remove (int num)
     enemies[num].type = ENEMY_NONE;
 }
 
-static void enemy_score (void)
-{
-    player.score += 1000;
-}
-
 static void enemy_ball_hit (int num)
 {
     if (enemies[num].size == 1)
@@ -124,16 +119,16 @@ static void enemy_ball_hit (int num)
     if (enemies[num].xvel > 0)
     {
         enemy_add (ENEMY_BALL, BULLET_NONE, enemies[num].rect.x + (enemies[num].rect.w / 2), enemies[num].rect.y,
-                enemies[num].xvel, -4, enemies[num].strength - 1, enemies[num].size -1);
+                enemies[num].xvel, -2, enemies[num].strength - 1, enemies[num].size -1);
         enemy_add (ENEMY_BALL, BULLET_NONE, enemies[num].rect.x - (enemies[num].rect.w / 2), enemies[num].rect.y,
-               -enemies[num].xvel, -4, enemies[num].strength - 1, enemies[num].size -1);
+               -enemies[num].xvel, -2, enemies[num].strength - 1, enemies[num].size -1);
     }
     else
     {
         enemy_add (ENEMY_BALL, BULLET_NONE, enemies[num].rect.x + (enemies[num].rect.w / 2), enemies[num].rect.y,
-                -enemies[num].xvel, -4, enemies[num].strength - 1, enemies[num].size -1);
+                -enemies[num].xvel, -2, enemies[num].strength - 1, enemies[num].size -1);
         enemy_add (ENEMY_BALL, BULLET_NONE, enemies[num].rect.x - (enemies[num].rect.w / 2), enemies[num].rect.y,
-               enemies[num].xvel, -4, enemies[num].strength - 1, enemies[num].size -1);
+               enemies[num].xvel, -2, enemies[num].strength - 1, enemies[num].size -1);
     }
     enemies[num].type = ENEMY_NONE;
 }
@@ -156,6 +151,8 @@ void enemy_hit (int num)
     {
         case ENEMY_CENTIPEDE:
         case ENEMY_HOMING:
+            combo_hit (enemies[num].size);
+            player_score (enemies[num].size);
             enemy_remove (num);
             break;
         case ENEMY_BALL:
@@ -328,6 +325,7 @@ void enemy_update (void)
         {
             detect_enemyhit (enemies[i].rect, i);
             enemy_bullet_check_to_fire (i);
+
             switch (enemies[i].type)
             {
                 case ENEMY_CENTIPEDE:
