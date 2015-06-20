@@ -56,6 +56,7 @@ static void scores_generate_html (void)
     //Generate footer
     fputs ("</body></html>", fp);
     fclose (fp);
+    fprintf (stdout, "Generated spang.html\n");
 }
 
 static void scores_init (void)
@@ -147,39 +148,21 @@ static void score_added (void)
     scores_generate_html ();
 }
 
+//Only allow 10 high scores per player
 void score_receive (char* initials, long score)
 {
     int i, j;
     int count;
     
     count = 0;
-
-    //Only allow 10 high scores per player
+    
+    //Insert the hiscore
     for (i = 0; i < NUM_HISCORES; i++)
     {
-        if (strncmp (scores[i].initials, initials, 3) == 0)
-                count++;
-        if (count == 10)
-        {
-            if (scores[i].score >= score)
-            {
-                fprintf (stdout, "Not inserting score, lower than previous 10 scores\n");
-                return;
-            }
-            else
-            {
-                fprintf (stdout, "Replacing lowest score\n");
-                scores[i].score = score;
-                return;
-            }
-        }
-    }
-
-    for (i = 0; i < NUM_HISCORES; i++)
-    {
-        if (score > scores[i].score)
+        if (score >= scores[i].score)
         {
             fprintf (stdout, "Inserting %s at %i with %li\n", initials, i, score);
+
             for (j = NUM_HISCORES; j > i; j--)
             {
                 scores[j].score = scores[j - 1].score;
@@ -187,9 +170,22 @@ void score_receive (char* initials, long score)
             }
             scores[i].score = score;
             strncpy (scores[i].initials, initials, 3);
-            score_added ();
-            return;
+            break;
         }
     }
-    fprintf (stderr, "Error: score_receive got to the end before adding a score?\n");
+   
+    //Check to see if the player has more than 3 entries, if so, delete the lowest and bump everyone up one place
+    for (i = 0; i < NUM_HISCORES; i++)
+    {
+        if (strncmp (scores[i].initials, initials, 3) == 0)
+        {  
+            count++;
+        }
+        if (count > 3)
+        {
+            scores[i].score = scores[i + 1].score;
+            strncpy (scores[i].initials, scores[i + 1].initials, 3);   
+        }
+    }
+    score_added ();
 }
