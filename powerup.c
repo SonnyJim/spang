@@ -1,5 +1,5 @@
 #include "spang.h"
-#define MAX_POWERUPS 64
+#define MAX_POWERUPS 128
 #define POWERUP_DISPLAY_TIME 200
 #define MEGASHOT_TIME 400
 #define NUM_POWERUPS 5
@@ -54,8 +54,8 @@ void powerup_add (powerup_t type, int xpos, int ypos)
     {
         if (powerups[i].type == POWERUP_NONE)
         {
-            if (xpos + powerups[i].rect.w > screen_width)
-                xpos -= powerups[i].rect.w;
+            if (xpos + 48 > (screen_width - 48))
+                xpos -= 48;
             powerups[i].type = type;
             powerups[i].time = 0;
             powerups[i].rect.x = xpos;

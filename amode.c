@@ -93,14 +93,12 @@ static void amode_scroller_draw (void)
 
 
 
-    //SDL_FreeSurface (scroller_srf);
+    SDL_FreeSurface (scroller_srf);
     scroller_srf = TTF_RenderText_Solid (scroller.font, scroller.msg, green);
     SDL_DestroyTexture (scroller_tex);
     scroller_tex = SDL_CreateTextureFromSurface (renderer, scroller_srf);
     SDL_RenderCopy (renderer, scroller_tex, NULL, &scroller.rect);
     scroller.delay = frame_counter;
-
-
 }
 
 void amode_fire (void)
@@ -116,6 +114,7 @@ void amode_fire (void)
 
 void amode_draw (void)
 {
+
     SDL_Rect logo_rect;
     logo_rect.w = 395;
     logo_rect.h = 70;
@@ -124,6 +123,7 @@ void amode_draw (void)
     SDL_RenderCopy (renderer, logo_tex, NULL, &logo_rect);
     //render_string_centre ("SPANG", 0, green, font2);
     //render_string_centre ("By Sonny Jim", 70, green, font3);
+
     if (gamestate == GAME_AMODE)
     {
         render_string_centre ("Press Fire to start or Space for Config", screen_height - 100, green, font3);
@@ -131,7 +131,9 @@ void amode_draw (void)
     }
     else if (gamestate == GAME_HSENTRY)
         render_string_centre ("Enter initials", screen_height - 100, green, font3);
+
     hiscore_draw ();
+
     stars_draw ();
 }
 

@@ -32,7 +32,7 @@ int network_send_score (char* initials, long score)
 		return (EXIT_FAILURE);
 	}
 
-	/* Send messages */
+	/* Build and send message */
     memset (buffer, 0, sizeof(len));
     memcpy (buffer, initials, 3);
     memcpy (buffer+3, &score, sizeof(score));

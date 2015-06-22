@@ -15,6 +15,8 @@ SDL_Renderer *renderer;
 int running;
 int draw_hitbox = 0;
 
+void draw_test (void);
+
 int main (int argc, char *argv[])
 {
     if (sdl_init () != 0)
@@ -39,7 +41,7 @@ int main (int argc, char *argv[])
     }
 
     hiscore_init ();
-    gamestate = GAME_AMODE;
+    //gamestate = GAME_DEMO;
     running = 1;
     while (running)
     {
@@ -49,8 +51,12 @@ int main (int argc, char *argv[])
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
             if (gamestate != GAME_OVER)
                 SDL_RenderClear (renderer);
+
             switch (gamestate)
             {
+                case GAME_DEMO:
+                    draw_test ();
+                    break;
                 case GAME_RUNNING:
                     game_loop ();
                     break;

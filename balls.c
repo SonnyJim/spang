@@ -47,6 +47,8 @@ void balls_check (void)
 
     if (!found)
     {
+        if (level_end_timer == 0)
+            level_end_timer = 20;
         level_end ();
     }
 }
@@ -136,6 +138,8 @@ void ball_init (int num)
     else
         balls[num].yvel = -5;
 */
+    balls[num].xvel = 1;
+    balls[num].yvel = 1;
     balls[num].angle = 0;
     balls[num].angle_vel = (rand () % 6) - 10;
     balls[num].size = 0;

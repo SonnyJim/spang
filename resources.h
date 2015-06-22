@@ -23,7 +23,7 @@ extern Mix_Chunk *comboup;
 extern Mix_Chunk *combodown;
 extern Mix_Chunk *levelup;
 extern Mix_Chunk *speedup;
-extern Mix_Chunk *alarm;
+extern Mix_Chunk *snd_alarm;
 extern Mix_Chunk *health1;
 extern Mix_Chunk *kaching;
 extern Mix_Chunk *slowdown;

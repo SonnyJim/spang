@@ -197,7 +197,7 @@ static int music_load (char *file, music_t num)
 int music_init (void)
 {
     int ret;
-    ret = music_load ("data/sfx/music/it-goes-to-11.mp3", MUSIC_T2K);
+    ret = music_load ("data/sfx/music/Rave Attack.mp3", MUSIC_T2K);
     ret = music_load ("data/sfx/music/ChipsDipsChainsWhips.mp3", MUSIC_BUBBLEBOBBLE);
     ret = music_load ("data/sfx/music/cyberrid.mod", MUSIC_CYBERRID);
     ret = music_load ("data/sfx/music/Dancehalltechno.mp3", MUSIC_MENU);
@@ -231,8 +231,8 @@ int audio_init (void)
     speedup = Mix_LoadWAV ("data/sfx/speedup.wav");
     if (speedup == NULL)
         return 1;
-    alarm = Mix_LoadWAV ("data/sfx/alarm1.wav");
-    if (alarm == NULL)
+    snd_alarm = Mix_LoadWAV ("data/sfx/alarm1.wav");
+    if (snd_alarm == NULL)
         return 1;
     health1 = Mix_LoadWAV ("data/sfx/health.wav");
     if (health1 == NULL)

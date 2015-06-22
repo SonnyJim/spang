@@ -67,7 +67,7 @@ static void gameover_init (void)
     enemy_draw ();
     bullets_draw ();
     powerups_draw ();
-    //explosions_draw ();
+    explosions_draw ();
 
     render_score ();
     //msg_draw ();

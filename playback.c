@@ -17,77 +17,91 @@ static int playback_readdir (void)
     int i;
 
     dp = opendir ("./recordings");
-
+/*
+    for (i = 0; i < num_files; i++)
+        free (filelist[i]);
+    free (filelist);
+*/
     num_files = 0;
-    if (dp != NULL)
+    if (dp == NULL)
     {
-        while (ep = readdir (dp))
-        {
-            if (strncmp (".rec", ep->d_name + strlen(ep->d_name) - 4, 4) == 0)
-            {
-                if (strlen (ep->d_name) > max_strlen)
-                    max_strlen = strlen (ep->d_name);
-                num_files++;
-            }
-        }
+        fprintf (stdout, "Unable to open directory ./recordings\n");
+        return 1;
+    }
 
-        if (num_files == 0)
+    while (ep = readdir (dp))
+    {
+        if (strncmp (".rec", ep->d_name + strlen(ep->d_name) - 4, 4) == 0)
         {
-            fprintf (stderr, "Didn't find any .rec files in recordings\n");
-            return 1;
+            if (strlen (ep->d_name) > max_strlen)
+                max_strlen = strlen (ep->d_name);
+            num_files++;
         }
-        //Dynamically size filelist array
-        if (filelist == NULL)
-            filelist = malloc (sizeof (char) * num_files);
+    }
 
-        if (filelist == NULL)
-        {
-            fprintf (stderr, "Error setting up filelist\n");
-            return 2;
-        }
-
+    if (num_files == 0)
+    {
+        fprintf (stderr, "Didn't find any .rec files in recordings\n");
+        return 1;
+    }
+    //Dynamically size filelist array
+    if (filelist == NULL)
+    {
+        filelist = malloc (sizeof (char*) * num_files);
         for (i = 0; i < num_files; i++)
-        {
-
-            filelist[i] = malloc (sizeof (char) * max_strlen);
-
-            if (filelist[i] == NULL)
-            {
-                fprintf (stderr, "Error setting up filelist\n");
-                return 2;
-            }
-        }
-
-        rewinddir (dp);
-
-        i = 0;
-        while (ep = readdir (dp))
-        {
-
-            if (strncmp (".rec", ep->d_name + strlen(ep->d_name) - 4, 4) == 0)
-            {
-                strcpy (filelist[i], ep->d_name);
-                i++;
-            }
-        }
-        closedir (dp);
+            filelist[i] = NULL;
     }
     else
     {
-        fprintf (stderr, "Couldn't open the directory\n");
-        return 1;
+        realloc (filelist, sizeof (char*) * num_files);
+        for (i = 0; i < num_files; i++)
+            filelist[i] = NULL;
     }
+
+    if (filelist == NULL)
+    {
+        fprintf (stderr, "Error setting up filelist num_files\n");
+        return 2;
+    }
+
+    for (i = 0; i < num_files; i++)
+    {
+        if (filelist[i] == NULL)
+            filelist[i] = malloc (sizeof (char*) * (max_strlen + 1));
+        else
+            realloc (filelist[i], sizeof (char*) * (max_strlen + 1));
+        if (filelist[i] == NULL)
+        {
+            fprintf (stderr, "Error setting up filelist strlen\n");
+            return 2;
+        }
+    }
+
+    rewinddir (dp);
+
+    i = 0;
+    while (ep = readdir (dp))
+    {
+        if (strncmp (".rec", ep->d_name + strlen(ep->d_name) - 4, 4) == 0)
+        {
+            strcpy (filelist[i], ep->d_name);
+            i++;
+        }
+    }
+    closedir (dp);
+
+    for (i = 0; i < num_files; i++)
+        fprintf (stdout, "file %i: %s\n", i, filelist[i]);
     return 0;
 }
 
 static void playback_free (void)
 {
-    int i;
-/*
-    for (i = 0; i < num_files; i++)
-        free (filelist[i]);
-    free (filelist);
-    */
+ //   int i;
+//    for (i = 0; i < num_files; i++)
+//        free (filelist[i]);
+//    free (filelist);
+
 }
 
 static void playback_init (void)
@@ -105,13 +119,90 @@ void playback_quit (void)
     playback_free ();
 }
 
+void playback_dump2 (char *file)
+{
+    FILE *fp, *fp2;
+    char buffer[1024];
+    Uint8 input;
+    Uint32 frame;
+    int counter;
+
+    fp = fopen ("dump2.txt", "w");
+    fp2 = fopen (file, "r");
+
+    input = 0;
+    frame = 0;
+    counter = 0;
+    while (counter < 4096)
+    {
+        counter++;
+        fread (&input, sizeof (input), 1, fp2);
+        if (input == REC_EOF)
+        {
+            fprintf (stdout, "Found EOF\n");
+            break;
+        }
+        fread (&frame, sizeof (frame), 1, fp2);
+        if (frame == 0 && input != REC_EOF)
+        {
+            fprintf (stdout, "Something went wrong at %i\n", counter);
+            break;
+        }
+        sprintf (buffer, "Playing back %i on frame %i\n", \
+                 input, frame);
+        fputs (buffer, fp);
+    }
+
+    fclose (fp);
+    fclose (fp2);
+}
+
+int playback_dump (void)
+{
+    FILE *fp;
+    char buffer[1024];
+    fp = fopen ("dump.txt", "w");
+    int oldframe;
+
+    rec_buffer_counter = 0;
+    oldframe = 0;
+    while (record_buffer[rec_buffer_counter].input != REC_EOF)
+    {
+        if (oldframe >= record_buffer[rec_buffer_counter].frame)
+        {
+            fclose (fp);
+            return 1;
+        }
+        sprintf (buffer, "Playing back %i on frame %i\n", \
+                 record_buffer[rec_buffer_counter].input, record_buffer[rec_buffer_counter].frame);
+        rec_buffer_counter++;
+        fputs (buffer, fp);
+    }
+    fclose (fp);
+    return 0;
+}
+
 static void playback_start (char *file)
 {
     char buffer[1024];
 
     sprintf (buffer, "recordings/%s", file);
     playback_free ();
-    record_load (buffer);
+    if (record_load (buffer))
+    {
+        playback_stop ();
+        gamestate = GAME_AMODE;
+        return;
+    }
+/*
+    if (playback_dump ())
+    {
+        playback_stop ();
+        gamestate = GAME_AMODE;
+        return;
+    }
+    playback_dump2 (buffer);
+*/
     frame_counter = 0;
     rec_buffer_counter = 0;
     record_state = REC_PLAYING;

@@ -1,4 +1,5 @@
 #include "spang.h"
+int level_end_timer;
 int level_change_timer;
 int level_change_paused = 0;
 
@@ -55,6 +56,7 @@ void level_up (void)
 {
     if (bonus_level_active)
         return;
+    level_end_timer = 0;
     stars_toggle_rotation ();
     Mix_PlayChannel (SND_MUSIC, levelup, 0);
     level_hit_ratio ();
@@ -91,7 +93,7 @@ void level_end (void)
 {
     if (player.level != 0 && player.level % 5 == 0 && !bonus_level_active)
         bonus_level_start ();
-    else
+    else if (--level_end_timer <= 0)
         level_up ();
 }
 

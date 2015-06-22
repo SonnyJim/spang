@@ -3,7 +3,7 @@
 SDL_Rect player_hitrect1;
 SDL_Rect player_hitrect2;
 
-Mix_Chunk *alarm;
+Mix_Chunk *snd_alarm;
 
 int score_bonus = 10;
 
@@ -102,7 +102,7 @@ void player_hit (void)
     }
     else if (player.health <= 20)
     {
-        Mix_PlayChannel (SND_MUSIC, alarm, 0);
+        Mix_PlayChannel (SND_MUSIC, snd_alarm, 0);
     }
 }
 

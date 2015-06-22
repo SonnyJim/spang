@@ -1,5 +1,7 @@
 #define NUM_LEVELS 21
 extern int level_change_timer;
+extern int level_end_timer;
+
 void level_up (void);
 void level_change_pause (void);
 void level_end (void);

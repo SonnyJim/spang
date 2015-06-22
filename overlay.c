@@ -38,27 +38,33 @@ int TextWidth, TextHeight = 0;
 
 void render_string (char *msg, int xpos, int ypos, SDL_Color colour, TTF_Font *font)
 {
-    score_srf = TTF_RenderText_Blended ( font, msg, colour);
-    score_tex = SDL_CreateTextureFromSurface (renderer, score_srf);
-    score_rect.x = xpos;
-    score_rect.y = ypos;
-    SDL_QueryTexture (score_tex, NULL, NULL, &score_rect.w, &score_rect.h);
-    SDL_RenderCopy (renderer, score_tex, NULL, &score_rect);
-    SDL_FreeSurface (score_srf);
-    SDL_DestroyTexture (score_tex);
+    SDL_Surface *srf = NULL;
+    SDL_Texture *tex = NULL;
+    SDL_Rect rect;
+
+    srf = TTF_RenderText_Blended ( font, msg, colour);
+    tex = SDL_CreateTextureFromSurface (renderer, srf);
+    SDL_FreeSurface (srf);
+
+    rect.x = xpos;
+    rect.y = ypos;
+
+    SDL_QueryTexture (tex, NULL, NULL, &rect.w, &rect.h);
+    SDL_RenderCopy (renderer, tex, NULL, &rect);
+    SDL_DestroyTexture (tex);
+
 }
 
 static void render_string_tcentre (char *msg, int xpos, int ypos, SDL_Color colour, TTF_Font *font)
 {
     score_srf = TTF_RenderText_Blended ( font, msg, colour);
     score_tex = SDL_CreateTextureFromSurface (renderer, score_srf);
+    SDL_FreeSurface (score_srf);
     TTF_SizeText (font, msg, &TextWidth, &TextHeight);
-
     score_rect.x = xpos - (TextWidth / 2);
     score_rect.y = ypos - (TextHeight / 2);
     SDL_QueryTexture (score_tex, NULL, NULL, &score_rect.w, &score_rect.h);
     SDL_RenderCopy (renderer, score_tex, NULL, &score_rect);
-    SDL_FreeSurface (score_srf);
     SDL_DestroyTexture (score_tex);
 }
 
@@ -66,12 +72,12 @@ void render_string_centre (char *msg, int ypos, SDL_Color colour, TTF_Font *font
 {
     score_srf = TTF_RenderText_Blended ( font, msg, colour);
     score_tex = SDL_CreateTextureFromSurface (renderer, score_srf);
+    SDL_FreeSurface (score_srf);
     TTF_SizeText (font, msg, &TextWidth, &TextHeight);
     score_rect.x = (screen_width / 2 ) - (TextWidth / 2);
     score_rect.y = ypos;
     SDL_QueryTexture (score_tex, NULL, NULL, &score_rect.w, &score_rect.h);
     SDL_RenderCopy (renderer, score_tex, NULL, &score_rect);
-    SDL_FreeSurface (score_srf);
     SDL_DestroyTexture (score_tex);
 }
 
@@ -79,13 +85,13 @@ static void render_string_right (char *msg, int ypos, SDL_Color colour, TTF_Font
 {
     score_srf = TTF_RenderText_Blended ( font, msg, colour);
     score_tex = SDL_CreateTextureFromSurface (renderer, score_srf);
+    SDL_FreeSurface (score_srf);
     TTF_SizeText (font1, msg, &TextWidth, &TextHeight);
     score_rect.x = screen_width - TextWidth;
     score_rect.y = ypos;
     SDL_QueryTexture (score_tex, NULL, NULL, &score_rect.w, &score_rect.h);
     SDL_RenderCopy (renderer, score_tex, NULL, &score_rect);
     SDL_DestroyTexture (score_tex);
-    SDL_FreeSurface (score_srf);
 }
 
 int render_score (void)
