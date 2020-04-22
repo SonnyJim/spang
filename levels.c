@@ -19,6 +19,13 @@ void level_three (void)
     ball_add (6, screen_width / 2, screen_height / 2, player.speed, 0, 5);
 }
 
+/*
+extern void throw_life_away (void);
+void level_four (void)
+{
+    throw_life_away ();
+}
+*/
 void level_four (void)
 {
     int i;
@@ -29,7 +36,6 @@ void level_four (void)
     }
 
 }
-
 void level_five (void)
 {
     int i;
@@ -58,7 +64,7 @@ void level_ten (void)
     ball_add (3, (screen_width /2) + 100, (screen_height / 2) - 100, player.speed, 0, 1);
 
     ball_add (7, (screen_width /2), (screen_height/2), player.speed, 0, 1);
-    Mix_PlayMusic (music[MUSIC_T2K], -1);
+    Mix_PlayMusic (music[MUSIC_SPANGTWO], -1);
 }
 
 void level_eleven (void)
@@ -156,7 +162,6 @@ void level_twentyone (void)
 {
     if (player.laps <= 2)
         textures_load (player.laps);
-
     if (player.laps == 1)
         Mix_PlayMusic (music[MUSIC_BUBBLEBOBBLE], -1);
     else

@@ -1,8 +1,8 @@
 #include "spang.h"
 SDL_Texture *bonus_tex;
 
-#define BARREL_W 25
-#define BARREL_H 25
+#define BARREL_W 50
+#define BARREL_H 50
 #define GRAVITY 0.1
 
 #define NUM_TARGETS 4
@@ -31,6 +31,11 @@ enum
     TOP_RIGHT,
     BOTTOM_RIGHT
 };
+
+void bonus_loop (void)
+{
+    fprintf (stdout, "Bonus loop\n");
+}
 
 static void bonus_barrels_init (void)
 {
@@ -100,6 +105,8 @@ static void bonus_barrel_add (int xpos, int ypos, int size, int xvel, int streng
            barrels[i].rect.h = BARREL_H * size;
            barrels[i].rect.x = xpos - (barrels[i].rect.w / 2);
            barrels[i].rect.y = ypos - (barrels[i].rect.h / 2);
+           barrels[i].angle = 1;
+           barrels[i].angle_vel = 0;
            barrels[i].yvel = -3;
            barrels[i].xvel = xvel;
            barrels[i].hits = 0;
@@ -168,10 +175,13 @@ static void bonus_barrel_update (int num)
 
     if (barrels[num].rect.y <= 0)
         barrels[num].yvel = barrels[num].speed;
-    else if (barrels[num].rect.y >= screen_height)
+    else if (barrels[num].rect.y >= screen_height) //The barrel fell off the screen
     {
+        //TODO Do we really want to reduce the bonus level time?
+        /*
         if (bonus_level_time > 60 * 5)
             bonus_level_time -= 60 * 5;
+        */
         bonus_perfect = 0;
         bonus_barrel_remove (num);
         bonus_barrel_add (screen_width / 2, 100, 3, 0, 5);
@@ -205,6 +215,7 @@ void bonus_barrel_hit (struct barrel_t *barrel, struct bullet_t *bullet)
 //Copy the player shooting values so we can reset them after the bonus level is finished
 static void bonus_store_player (void)
 {
+	//TODO This looks like it's the source of the 'laser level mysteriously jumps back up to full belt' after a bonus round
     /*
     bonus_player.bullet_delay = player.bullet_delay;
     bonus_player.bullet_max = player.bullet_max;
@@ -244,6 +255,7 @@ void bonus_level_start (void)
     bonus_barrel_add (screen_width / 2, 100, 3, 0, 7);
     bonus_perfect = 1;
     //Find megashot powerup and remove it
+    Mix_PlayMusic (music[MUSIC_BONUS], -1);
 
 }
 
@@ -258,6 +270,7 @@ void bonus_level_stop (void)
     }
     bonus_restore_player ();
     bonus_level_active = 0;
+    //TODO Put in a wait loop so the next level doesn't start so quickly
     level_up ();
 }
 static void bonus_draw_message (void)

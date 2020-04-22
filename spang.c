@@ -35,13 +35,13 @@ int main (int argc, char *argv[])
         return 1;
     }
 
+	fprintf (stdout, "Loading config\n");
     if (config_load ())
     {
         fprintf (stderr, "Error loading config\n");
     }
 
     hiscore_init ();
-    //gamestate = GAME_DEMO;
     running = 1;
     while (running)
     {
@@ -49,7 +49,7 @@ int main (int argc, char *argv[])
         if (!paused)
         {
             SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
-            if (gamestate != GAME_OVER)
+	//if (gamestate != GAME_OVER)
                 SDL_RenderClear (renderer);
 
             switch (gamestate)
@@ -58,7 +58,14 @@ int main (int argc, char *argv[])
                     draw_test ();
                     break;
                 case GAME_RUNNING:
+                case GAME_ENDLEVEL:
                     game_loop ();
+                    break;
+                //case GAME_ENDLEVEL:
+                //    level_endlevel_loop ();
+                //    break;
+                case GAME_BONUS:
+                    bonus_loop ();
                     break;
                 case GAME_AMODE:
                 default:
@@ -78,6 +85,10 @@ int main (int argc, char *argv[])
                     playback_loop ();
                     break;
             }
+        }
+        else
+        {
+            render_score ();
         }
 
         SDL_RenderPresent (renderer);

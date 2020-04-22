@@ -46,6 +46,7 @@ static void input_read_left (void)
     switch (gamestate)
     {
         case GAME_RUNNING:
+        case GAME_ENDLEVEL:
             if (!paused)
                 player_move_left ();
             break;
@@ -68,6 +69,7 @@ static void input_read_right (void)
     switch (gamestate)
     {
         case GAME_RUNNING:
+        case GAME_ENDLEVEL:
             if (!paused)
                 player_move_right ();
             break;
@@ -221,7 +223,7 @@ void sdl_read_input (void)
                 {
                     case SDLK_ESCAPE:
                         game_unpause ();
-                        if (gamestate == GAME_RUNNING)
+                        if (gamestate == GAME_RUNNING || gamestate == GAME_ENDLEVEL)
                             gamestate = GAME_OVER;
                         else if (gamestate == GAME_CONFIG)
                             gamestate = GAME_AMODE;
@@ -316,7 +318,7 @@ void sdl_read_input (void)
         input_read_pause ();
     if (paused)
         return;
-    if (gamestate == GAME_RUNNING)
+    if (gamestate == GAME_RUNNING ||gamestate == GAME_ENDLEVEL)
         frame_counter++;
     if (record_state == REC_PLAYING)
     {
@@ -359,7 +361,7 @@ void sdl_read_input (void)
         input_read_up ();
     else if (down && !up)
         input_read_down ();
-    if (record_state == REC_REC && gamestate == GAME_RUNNING)
+    if (record_state == REC_REC && (gamestate == GAME_RUNNING || gamestate == GAME_ENDLEVEL))
         record_frame ();
 }
 
@@ -381,8 +383,8 @@ int sdl_init (void)
         return 1;
     }
 
-    screen_height = videomode.h;
-    screen_width = videomode.w;
+    //screen_height = videomode.h;
+    //screen_width = videomode.w;
 
     screen_width = 1024;
     screen_height = 600;
@@ -406,6 +408,7 @@ int sdl_init (void)
         return 1;
     }
 
+/*
     int flags = MIX_INIT_OGG|MIX_INIT_MOD|MIX_INIT_OGG;
     int initted = Mix_Init (flags);
     if ((initted&flags) != flags)
@@ -415,6 +418,7 @@ int sdl_init (void)
     }
     //music = Mix_LoadMUS( "data/sfx/cyberrid.mod" );
 
+*/
     if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) == -1 )
         return 1;
     Mix_AllocateChannels (16);

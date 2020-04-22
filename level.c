@@ -1,4 +1,6 @@
 #include "spang.h"
+#define ENDLEVEL_TIMER 2*60
+
 int level_end_timer;
 int level_change_timer;
 int level_change_paused = 0;
@@ -12,13 +14,19 @@ void (*level_p[NUM_LEVELS]) () =
 
 static void level_hit_ratio (void)
 {
+
     char buffer[64];
     float hitratio =  (float) player.hits_round / (float) player.shots_fired_round;
     int percent = hitratio * 100;
+
+    if (player.hits_round == 0 || player.shots_fired_round == 0)
+    {
+        fprintf (stdout, "hits: %li, shots: %li\n", player.hits_round, player.shots_fired_round);
+        fprintf (stderr, "No shots or hits??????\n");
+        return;
+    }
     player.shots_fired_round = 0;
     player.hits_round = 0;
-
-
     fprintf (stdout, "hitratio: %f\n", hitratio);
     sprintf (buffer, "Hit ratio %i", percent);
     if (hitratio > 1)
@@ -56,20 +64,22 @@ void level_up (void)
 {
     if (bonus_level_active)
         return;
-    level_end_timer = 0;
+    level_end_timer = 20;
     stars_toggle_rotation ();
     Mix_PlayChannel (SND_MUSIC, levelup, 0);
-    level_hit_ratio ();
+
 
     //Set the pause time before a level starts
     level_change_timer = 2 * 60;
 
-    //player.level = 10;
+    //Run the function to setup the level
     (*level_p[player.level]) ();
+
     if (player.level < NUM_LEVELS - 1)
         player.level++;
     else
         player.level = 0;
+
 
     if (player.level > 1)
     {
@@ -79,11 +89,9 @@ void level_up (void)
         powerup_add (POWERUP_SLOW, randy (0, screen_width), 0);
     if (player.level % 5 == 0)
         powerup_add (POWERUP_MEGASHOT, randy (0, screen_width), 0);
-    if (player.level % 4 == 0)
-    {
-        msg_show ("Supertapper recharge", 0, 130, 3, font1, ALIGN_CENTRE, green);
-        player.smartbomb = 1;
-    }
+
+    msg_show ("Supertapper recharge", 0, 130, 3, font1, ALIGN_CENTRE, green);
+    player.smartbomb = 1;
 
     msg_level_up ();
     player.stage_time = frame_counter;
@@ -91,10 +99,16 @@ void level_up (void)
 
 void level_end (void)
 {
-    if (player.level != 0 && player.level % 5 == 0 && !bonus_level_active)
-        bonus_level_start ();
-    else if (--level_end_timer <= 0)
-        level_up ();
+    if (gamestate != GAME_ENDLEVEL)
+    {
+        level_end_timer = ENDLEVEL_TIMER;
+        gamestate = GAME_ENDLEVEL;
+        if (player.level > 0)
+            level_hit_ratio ();
+        return;
+    }
+
+    level_endlevel_loop ();
 }
 
 void level_change_pause (void)
@@ -103,5 +117,38 @@ void level_change_pause (void)
         bonus_draw ();
     if (level_change_timer)
         level_change_timer--;
+
 }
 
+static void level_endlevel_draw (void)
+{
+    int r,g,b;
+    SDL_Rect box;
+
+    SDL_SetRenderDrawColor (renderer, 255, 255, 255,0);
+                //SDL_SetRenderDrawColor(renderer, rand() % 255, rand() % 255, rand () % 255, 0);
+                //SDL_RenderDrawPoint (renderer, explosions[i][j].particle_rect.x, explosions[i][j].particle_rect.y);
+    SDL_RenderFillRect (renderer, &box);
+}
+void level_endlevel_loop (void)
+{
+    if (level_end_timer-- != 0)
+    {
+        explosions_draw ();
+        render_score ();
+        msg_draw ();
+    }
+    else
+    {
+        fprintf (stdout, "Start next level\n");
+        gamestate = GAME_RUNNING;
+
+        if (player.level != 0 && player.level % 5 == 0 && !bonus_level_active)
+        {
+            bonus_level_start ();
+
+        }
+        else
+            level_up ();
+    }
+}

@@ -43,7 +43,7 @@ static void amode_scroller_init (void)
     scroller.rect.w = screen_width;
     scroller.xwidth = (screen_width / scroller.charwidth);
     if (scroller.msg == NULL)
-        scroller.msg = malloc (sizeof (char) * scroller.xwidth);
+        scroller.msg = malloc (sizeof (scroller.xwidth));
 }
 
 static void amode_scroller_build (void)
@@ -57,8 +57,8 @@ static void amode_scroller_build (void)
             scroller.start = 0;
             return;
         }
-
-        memset (scroller.msg, 0, sizeof (scroller.msg));
+	size_t scroller_size = sizeof(scroller.msg);
+        memset (scroller.msg, 0, scroller_size);
         j = scroller.index;
         for (i = 0; i < scroller.xwidth; i++)
         {

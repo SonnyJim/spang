@@ -115,6 +115,10 @@ int render_score (void)
         render_string_right (score_str, 0, red, font1);
     else
         render_string_right (score_str, 0, green, font1);
+    
+    sprintf (score_str, "Level %i", player.level);
+    render_string_right (score_str, 25, green, font1);
+
 
     sprintf (score_str, "( %i )", score_bonus);
     if (score_bonus == 800)
@@ -123,11 +127,11 @@ int render_score (void)
         render_string_centre (score_str, TextHeight, green, font3);
 
     if (paused)
-        render_string_right ("Paused", 25, red, font1);
+        render_string_right ("Paused", 50, red, font1);
     else if (record_state == REC_REC)
-        render_string_right ("Record", 25, red, font1);
+        render_string_right ("Record", 50, red, font1);
     else if (record_state == REC_PLAYING)
-        render_string_right ("Playback", 25, green, font1);
+        render_string_right ("Playback", 50, green, font1);
     return 0;
 }
 

@@ -27,3 +27,5 @@ void level_eighteen (void);
 void level_nineteen (void);
 void level_twenty (void);
 void level_twentyone (void);
+
+void level_endlevel_loop (void);

@@ -20,33 +20,33 @@ void combo_set_level (int level)
         case 0:
         default:
             trippy_mode = 0;
-            player.bullet_max = 2;
-            player.bullet_size = 10;
+            player.bullet_max = 4;
+            player.bullet_size = 20;
             player.bullet_delay = 12;
             break;
         case 1:
             trippy_mode = 0;
-            player.bullet_max = 4;
+            player.bullet_max = 8;
             player.bullet_delay = 10;
-            player.bullet_size = 15;
+            player.bullet_size = 30;
             break;
         case 2:
             trippy_mode = 1;
-            player.bullet_max = 5;
+            player.bullet_max = 16;
             player.bullet_delay = 7;
-            player.bullet_size = 20;
+            player.bullet_size = 40;
             break;
         case 3:
             trippy_mode = 2;
-            player.bullet_max = 10;
+            player.bullet_max = 20;
             player.bullet_delay = 5;
-            player.bullet_size = 30;
+            player.bullet_size = 50;
             break;
         case 4:
             trippy_mode = 3;
-            player.bullet_max = 20;
+            player.bullet_max = 32;
             player.bullet_delay = 3;
-            player.bullet_size = 40;
+            player.bullet_size = 60;
             break;
     }
 }
@@ -67,8 +67,10 @@ void combo_check_level (void)
 
 void combo_increment (void)
 {
+
     player.hits++;
     player.hits_round++;
+//    fprintf (stdout, "Hit++ %li\n", player.hits_round);
 
     if (player.combo < COMBO_MAX)
         player.combo++;

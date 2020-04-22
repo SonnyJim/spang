@@ -45,10 +45,8 @@ void balls_check (void)
         }
     }
 
-    if (!found)
+    if (!found) //No targets left
     {
-        if (level_end_timer == 0)
-            level_end_timer = 20;
         level_end ();
     }
 }

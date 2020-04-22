@@ -1,7 +1,8 @@
 #include "spang.h"
 #include <math.h>
 int size;
-
+int xpos = 0;
+/*
 void draw_test (void)
 {
     float x, y;
@@ -16,4 +17,24 @@ void draw_test (void)
         SDL_RenderDrawPoint(renderer, x, (y * size)+ (screen_height /2));
     }
     //gamestate = GAME_AMODE;
+}
+*/
+/*
+ *Necrocomment: Ha ha ha
+void throw_life_away (void)
+{
+    gamestate = GAME_DEMO;
+    Mix_PlayMusic (music[MUSIC_WEDDING], -1);
+}
+*/
+void draw_test (void)
+{
+    if (xpos < screen_height / 2)
+    {
+        xpos ++;
+        render_string_centre ("POO PLOP WILLY BUM", xpos, red, font4);
+
+    }
+    else
+        render_string_centre ("ASH IS KING", xpos, green, font5);
 }

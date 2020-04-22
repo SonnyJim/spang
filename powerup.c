@@ -133,9 +133,11 @@ void powerups_check_collision (int num)
 }
 void powerups_update (int i)
 {
+   #define POWERUP_DOWN_SPEED 20
+
     //Move powerup down the screen and start the timer when they hit the bottom
-    if (powerups[i].rect.y + 5 < (screen_height - powerups[i].rect.h))
-        powerups[i].rect.y += 5;
+    if (powerups[i].rect.y + POWERUP_DOWN_SPEED < (screen_height - powerups[i].rect.h))
+        powerups[i].rect.y += POWERUP_DOWN_SPEED;
     else if (powerups[i].time == 0)
         powerups[i].time = frame_counter;
     else if (powerups[i].time + POWERUP_DISPLAY_TIME - 100 < frame_counter)

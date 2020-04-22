@@ -2,14 +2,18 @@ int music_init (void);
 int fonts_init (void);
 int audio_init (void);
 
-#define NUM_MUSIC 5
+#define NUM_MUSIC 10
 
 typedef enum
 {
     MUSIC_MENU,
     MUSIC_T2K,
     MUSIC_BUBBLEBOBBLE,
-    MUSIC_CYBERRID
+    MUSIC_BOOBIES,
+    MUSIC_NNTCALLED,
+    MUSIC_BONUS,
+    MUSIC_SPANGONE,
+    MUSIC_SPANGTWO
 
 } music_t;
 
@@ -33,3 +37,11 @@ extern Mix_Chunk *siren;
 extern Mix_Chunk *snd_barrel;
 
 extern SDL_Texture *logo_tex;
+
+
+extern TTF_Font *font1;
+extern TTF_Font *font2;
+extern TTF_Font *font3;
+extern TTF_Font *font4;
+extern TTF_Font *font5;
+

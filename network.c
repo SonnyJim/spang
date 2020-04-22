@@ -7,6 +7,7 @@
 
 int network_send_score (char* initials, long score)
 {
+    return 0;
 	IPaddress ip;		/* Server address */
 	TCPsocket sd;		/* Socket descriptor */
 	int len = (sizeof (char) * 3) + sizeof (long)   ;

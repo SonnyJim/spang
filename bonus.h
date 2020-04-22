@@ -23,3 +23,4 @@ void bonus_barrel_hit (struct barrel_t *barrel, struct bullet_t *bullet);
 void bonus_draw (void);
 void bonus_level_start (void);
 void bonus_level_stop (void);
+extern void bonus_loop (void);

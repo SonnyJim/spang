@@ -35,6 +35,7 @@ TTF_Font *font1 = NULL;
 TTF_Font *font2 = NULL;
 TTF_Font *font3 = NULL;
 TTF_Font *font4 = NULL;
+TTF_Font *font5 = NULL;
 
 int texture_error = 0;
 
@@ -117,12 +118,13 @@ static SDL_Texture* texture_load_img (char *file)
 
 int textures_load (int num)
 {
-    int i;
     texture_error = 0;
-
+/*
+ * TODO: Erm, what was this for?
+    int i;
     for (i = 0; i < NUM_TEXTURES; i++)
         SDL_DestroyTexture(textures[i]);
-
+*/
     ball_tex = texture_load_img (texture_packs[num].ball);
     bullet_tex = texture_load_img (texture_packs[num].bullet);
     bg_tex = texture_load_img (texture_packs[num].bg);
@@ -169,6 +171,7 @@ int fonts_init (void)
     font2 = TTF_OpenFont( "data/fonts/8bitwonder.ttf", 40 );
     font3 = TTF_OpenFont( "data/fonts/8bitwonder.ttf", 12 );
     font4 = TTF_OpenFont ("data/fonts/PressStart2P.ttf", 20);
+    font5 = TTF_OpenFont ("data/fonts/PressStart2P.ttf", 50);
     if (font1 == NULL || font2 == NULL || font3 == NULL || font4 == NULL)
     {
         fprintf (stderr, "Error loading fonts: %s\n", TTF_GetError ());
@@ -196,11 +199,16 @@ static int music_load (char *file, music_t num)
 
 int music_init (void)
 {
+	//TODO Haha holy shit
     int ret;
     ret = music_load ("data/sfx/music/Rave Attack.mp3", MUSIC_T2K);
     ret = music_load ("data/sfx/music/ChipsDipsChainsWhips.mp3", MUSIC_BUBBLEBOBBLE);
-    ret = music_load ("data/sfx/music/cyberrid.mod", MUSIC_CYBERRID);
     ret = music_load ("data/sfx/music/Dancehalltechno.mp3", MUSIC_MENU);
+    ret = music_load ("data/sfx/music/Boobies.mp3", MUSIC_BOOBIES);
+    ret = music_load ("data/sfx/music/1992 Called (Bouncy Bopper Mix).mp3", MUSIC_NNTCALLED);
+    ret = music_load ("data/sfx/music/BonusLevel.mp3", MUSIC_BONUS);
+    ret = music_load ("data/sfx/music/spang1.mp3", MUSIC_SPANGONE);
+    ret = music_load ("data/sfx/music/spang2.mp3", MUSIC_SPANGTWO);
 
     return ret;
 }
@@ -216,7 +224,7 @@ int audio_init (void)
     playerhit = Mix_LoadWAV ("data/sfx/hit.wav");
     if (playerhit == NULL)
         return 1;
-    death = Mix_LoadWAV ("data/sfx/death.wav");
+    death = Mix_LoadWAV ("data/sfx/GameOver.wav");
     if (death == NULL)
         return 1;
     comboup = Mix_LoadWAV ("data/sfx/comboup.wav");
