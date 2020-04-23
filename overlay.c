@@ -115,8 +115,8 @@ int render_score (void)
         render_string_right (score_str, 0, red, font1);
     else
         render_string_right (score_str, 0, green, font1);
-    
-    sprintf (score_str, "Level %i", player.level);
+    if (gamestate != GAME_BONUS)
+        sprintf (score_str, "Level %i", player.level);    else       sprintf (score_str, "Bonus %i", player.bonus_level);
     render_string_right (score_str, 25, green, font1);
 
 
