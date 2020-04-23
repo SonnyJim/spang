@@ -277,7 +277,7 @@ void bonus_level_stop (void)
     bonus_restore_player ();
     bonus_level_active = 0;
     //TODO Put in a wait loop so the next level doesn't start so quickly
-    gamestate == GAME_RUNNING;
+    gamestate = GAME_RUNNING;
     level_up ();
 }
 static void bonus_draw_message (void)

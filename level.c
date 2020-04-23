@@ -64,7 +64,13 @@ void level_up (void)
 {
 //    if (bonus_level_active)
 //        return;
-    fprintf (stdout, "level_up\n");
+    if (gamestate != GAME_RUNNING)
+    {
+        fprintf (stdout, "ERROR!!!!! level_up gamestate is %i\n",gamestate);
+        return;
+    }
+    fprintf (stdout, "level_up ");
+    fprintf (stdout, "Gamestate: %i\n", gamestate);
     level_end_timer = 20;
     stars_toggle_rotation ();
     Mix_PlayChannel (SND_MUSIC, levelup, 0);
@@ -100,8 +106,8 @@ void level_up (void)
 
 void level_end (void)
 {
-    fprintf(stdout, "level_end (): %i\n", level_end_timer);
-    fprintf (stdout, "Gamestate: %i", gamestate);
+ //   fprintf(stdout, "level_end (): %i\n", level_end_timer);
+ //   fprintf (stdout, "Gamestate: %i\n", gamestate);
     if (gamestate == GAME_RUNNING)
     {
         level_end_timer = ENDLEVEL_TIMER;
@@ -133,7 +139,7 @@ static void level_endlevel_draw (void)
 }
 void level_endlevel_loop (void)
 {
-    fprintf (stdout, "level_endlevel_loop ()\n");
+ //   fprintf (stdout, "level_endlevel_loop ()\n");
     if (level_end_timer-- != 0)
     {
         explosions_draw ();

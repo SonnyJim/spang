@@ -317,7 +317,7 @@ static void enemy_update_ball (struct enemy *enemy)
 void enemy_update (void)
 {
     int i;
-    if (level_change_timer)
+    if (level_start_timer)
         return;
     for (i = 0; i < MAX_ENEMIES; i++)
     {
