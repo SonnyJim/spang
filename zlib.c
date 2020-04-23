@@ -38,7 +38,7 @@ int zlib_inflate_from_file (char* filename, char* dst, int bufflen)
 {
     FILE *fp;
     char* in;
-    char* out;
+//    char* out;
     int filesize, ret;
     z_stream infstream;
 
