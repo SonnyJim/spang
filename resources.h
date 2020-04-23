@@ -16,7 +16,7 @@ typedef enum
     MUSIC_SPANGTWO
 
 } music_t;
-
+extern music_t current_music;
 extern Mix_Music *music[NUM_MUSIC];
 
 extern Mix_Chunk *laser1;

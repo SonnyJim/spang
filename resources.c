@@ -38,7 +38,7 @@ TTF_Font *font4 = NULL;
 TTF_Font *font5 = NULL;
 
 int texture_error = 0;
-
+music_t current_music;
 struct texture_pack
 {
     char *ball;

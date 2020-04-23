@@ -47,7 +47,7 @@ void game_start (void)
         record_start ();
 
     playtime_start = SDL_GetTicks ();
-    Mix_PlayMusic (music[MUSIC_SPANGONE], -1);
+    current_music = MUSIC_SPANGONE;    Mix_PlayMusic (music[current_music], -1);
 
     //Guarenteed to be random, Stern says so!
     random_seed = 69696969;
