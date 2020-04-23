@@ -108,13 +108,13 @@ void player_hit (void)
 
 void player_move_left (void)
 {
-    if (player.rect.x > 0)
+    if (player.rect.x > 10)
         player.rect.x -= 10;
 }
 
 void player_move_right (void)
 {
-    if (player.rect.x + player.rect.w < screen_width)
+    if (player.rect.x + player.rect.w + 10 < screen_width)
         player.rect.x += 10;
 }
 void player_ball_destroyed (void)
