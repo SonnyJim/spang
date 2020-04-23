@@ -46,6 +46,7 @@ static void input_read_left (void)
     switch (gamestate)
     {
         case GAME_RUNNING:
+        case GAME_BONUS:
         case GAME_ENDLEVEL:
             if (!paused)
                 player_move_left ();
@@ -69,6 +70,7 @@ static void input_read_right (void)
     switch (gamestate)
     {
         case GAME_RUNNING:
+        case GAME_BONUS:
         case GAME_ENDLEVEL:
             if (!paused)
                 player_move_right ();
@@ -92,6 +94,8 @@ static void input_read_fire (void)
     switch (gamestate)
     {
         case GAME_RUNNING:
+        //case GAME_ENDLEVEL:
+        case GAME_BONUS:
             if (!paused)
                 bullet_add ();
             break;
@@ -223,7 +227,7 @@ void sdl_read_input (void)
                 {
                     case SDLK_ESCAPE:
                         game_unpause ();
-                        if (gamestate == GAME_RUNNING || gamestate == GAME_ENDLEVEL)
+                        if (gamestate == GAME_RUNNING || gamestate == GAME_ENDLEVEL || gamestate == GAME_BONUS)
                             gamestate = GAME_OVER;
                         else if (gamestate == GAME_CONFIG)
                             gamestate = GAME_AMODE;
@@ -318,7 +322,7 @@ void sdl_read_input (void)
         input_read_pause ();
     if (paused)
         return;
-    if (gamestate == GAME_RUNNING ||gamestate == GAME_ENDLEVEL)
+    if (gamestate == GAME_RUNNING ||gamestate == GAME_ENDLEVEL || GAME_BONUS)
         frame_counter++;
     if (record_state == REC_PLAYING)
     {

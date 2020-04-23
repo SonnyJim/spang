@@ -32,11 +32,14 @@ enum
     BOTTOM_RIGHT
 };
 
+/*
 void bonus_loop (void)
 {
     fprintf (stdout, "Bonus loop\n");
+    game_loop();
+    bonus_draw ();
 }
-
+*/
 static void bonus_barrels_init (void)
 {
     int i;
@@ -245,6 +248,8 @@ static void bonus_restore_player (void)
 
 void bonus_level_start (void)
 {
+    fprintf (stdout, "Bonus level start\n");
+    gamestate = GAME_BONUS;
     powerup_megashot_disable ();
     bonus_barrels_init ();
     bonus_store_player ();

@@ -59,13 +59,8 @@ int main (int argc, char *argv[])
                     break;
                 case GAME_RUNNING:
                 case GAME_ENDLEVEL:
-                    game_loop ();
-                    break;
-                //case GAME_ENDLEVEL:
-                //    level_endlevel_loop ();
-                //    break;
                 case GAME_BONUS:
-                    bonus_loop ();
+                    game_loop ();
                     break;
                 case GAME_AMODE:
                 default:

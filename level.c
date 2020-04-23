@@ -99,7 +99,9 @@ void level_up (void)
 
 void level_end (void)
 {
-    if (gamestate != GAME_ENDLEVEL)
+    fprintf(stdout, "level_end (): %i\n", level_end_timer);
+    fprintf (stdout, "Gamestate: %i", gamestate);
+    if (gamestate == GAME_RUNNING)
     {
         level_end_timer = ENDLEVEL_TIMER;
         gamestate = GAME_ENDLEVEL;
@@ -113,8 +115,8 @@ void level_end (void)
 
 void level_change_pause (void)
 {
-    if (bonus_level_active)
-        bonus_draw ();
+//    if (bonus_level_active)
+//        bonus_draw ();
     if (level_change_timer)
         level_change_timer--;
 
@@ -140,7 +142,7 @@ void level_endlevel_loop (void)
     }
     else
     {
-        fprintf (stdout, "Start next level\n");
+        fprintf (stdout, "Start next level: %i\n", player.level);
         gamestate = GAME_RUNNING;
 
         if (player.level != 0 && player.level % 5 == 0 && !bonus_level_active)

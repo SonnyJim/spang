@@ -123,5 +123,9 @@ void game_loop (void)
     explosions_draw ();
     render_score ();
     msg_draw ();
-    level_change_pause ();
+    if (gamestate == GAME_ENDLEVEL)
+        level_endlevel_loop ();
+    if (gamestate == GAME_BONUS)
+        bonus_draw ();
+    level_change_pause();
 }

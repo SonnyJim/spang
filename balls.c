@@ -22,9 +22,11 @@ void balls_speed_change (void)
     }
 }
 
-//Check to see how many balls left
+//Check to see how many balls and enemies we have left
 void balls_check (void)
 {
+    if (gamestate != GAME_RUNNING)
+        return;
     int found = 0;
     int i;
     for (i = 0; i < MAX_BALLS; i++)
