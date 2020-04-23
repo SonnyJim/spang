@@ -165,7 +165,7 @@ void ball_update (int num)
     else if (balls[num].angle <= 0)
         balls[num].angle = 360;
 
-    if (level_change_timer)
+    if (level_start_timer)
         return;
     balls[num].rect.x += balls[num].xvel;
     balls[num].rect.y += balls[num].yvel;

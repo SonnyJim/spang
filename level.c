@@ -2,7 +2,7 @@
 #define ENDLEVEL_TIMER 2*60
 
 int level_end_timer;
-int level_change_timer;
+int level_start_timer;
 int level_change_paused = 0;
 
 void (*level_p[NUM_LEVELS]) () =
@@ -62,15 +62,16 @@ static void level_hit_ratio (void)
 
 void level_up (void)
 {
-    if (bonus_level_active)
-        return;
+//    if (bonus_level_active)
+//        return;
+    fprintf (stdout, "level_up\n");
     level_end_timer = 20;
     stars_toggle_rotation ();
     Mix_PlayChannel (SND_MUSIC, levelup, 0);
 
 
     //Set the pause time before a level starts
-    level_change_timer = 2 * 60;
+    level_start_timer = 2 * 60;
 
     //Run the function to setup the level
     (*level_p[player.level]) ();
@@ -113,12 +114,10 @@ void level_end (void)
     level_endlevel_loop ();
 }
 
-void level_change_pause (void)
+void level_start_pause (void)
 {
-//    if (bonus_level_active)
-//        bonus_draw ();
-    if (level_change_timer)
-        level_change_timer--;
+    if (level_start_timer)
+        level_start_timer--;
 
 }
 
@@ -134,6 +133,7 @@ static void level_endlevel_draw (void)
 }
 void level_endlevel_loop (void)
 {
+    fprintf (stdout, "level_endlevel_loop ()\n");
     if (level_end_timer-- != 0)
     {
         explosions_draw ();
@@ -145,10 +145,9 @@ void level_endlevel_loop (void)
         fprintf (stdout, "Start next level: %i\n", player.level);
         gamestate = GAME_RUNNING;
 
-        if (player.level != 0 && player.level % 5 == 0 && !bonus_level_active)
+        if (player.level != 0 && player.level % 5 == 1)
         {
             bonus_level_start ();
-
         }
         else
             level_up ();

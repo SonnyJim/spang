@@ -127,5 +127,5 @@ void game_loop (void)
         level_endlevel_loop ();
     if (gamestate == GAME_BONUS)
         bonus_draw ();
-    level_change_pause();
+    level_start_pause();
 }

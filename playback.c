@@ -262,11 +262,11 @@ void playback_loop (void)
     char buffer[1024];
     if (num_files <= 0)
     {
-        if (level_change_timer == 0)
-            level_change_timer = 60;
+        if (level_start_timer == 0)
+            level_start_timer = 60;
         render_string_centre ("No files found", screen_height /2, red, font4);
-        level_change_timer--;
-        if (level_change_timer == 0)
+        level_start_timer--;
+        if (level_start_timer == 0)
         {
             playback_stop ();
             gamestate = GAME_AMODE;

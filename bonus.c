@@ -195,7 +195,7 @@ static void bonus_barrel_update (int num)
 
 void bonus_barrel_hit (struct barrel_t *barrel, struct bullet_t *bullet)
 {
-    if (level_change_timer)
+    if (level_start_timer)
         return;
     if (++barrel->hits > barrel->strength)
     {
@@ -256,7 +256,7 @@ void bonus_level_start (void)
     bonus_level_active = 1;
     bonus_level_time = 30 * 60;
     player.bonus_level++;
-    level_change_timer = 3 * 60;
+    level_start_timer = 3 * 60;
     bonus_barrel_add (screen_width / 2, 100, 3, 0, 7);
     bonus_perfect = 1;
     //Find megashot powerup and remove it
@@ -266,6 +266,7 @@ void bonus_level_start (void)
 
 void bonus_level_stop (void)
 {
+    fprintf (stdout, "Bonus level stop\n");
     if (bonus_perfect)
     {
         msg_show ("PERFECT", screen_width /2, screen_height - 200, 3, font2, ALIGN_CENTRE, red);
@@ -276,6 +277,7 @@ void bonus_level_stop (void)
     bonus_restore_player ();
     bonus_level_active = 0;
     //TODO Put in a wait loop so the next level doesn't start so quickly
+    gamestate == GAME_RUNNING;
     level_up ();
 }
 static void bonus_draw_message (void)
@@ -308,7 +310,7 @@ void bonus_draw (void)
     char buffer[1024] = "";
     for (i = 0; i < BONUS_BARRELS; i++)
     {
-        if (level_change_timer)
+        if (level_start_timer)
         {
             bonus_draw_message ();
         }
