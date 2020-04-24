@@ -8,8 +8,7 @@ SDL_Texture *bonus_tex;
 #define NUM_TARGETS 4
 
 int bonus_perfect;
-
-//TODO Award bonus pojnts for lower targets, health for upper targets?
+int bonus_endlevel_timer;
 
 struct targets_t
 {
@@ -32,14 +31,6 @@ enum
     BOTTOM_RIGHT
 };
 
-/*
-void bonus_loop (void)
-{
-    fprintf (stdout, "Bonus loop\n");
-    game_loop();
-    bonus_draw ();
-}
-*/
 static void bonus_barrels_init (void)
 {
     int i;
@@ -180,11 +171,6 @@ static void bonus_barrel_update (int num)
         barrels[num].yvel = barrels[num].speed;
     else if (barrels[num].rect.y >= screen_height) //The barrel fell off the screen
     {
-        //TODO Do we really want to reduce the bonus level time?
-        /*
-        if (bonus_level_time > 60 * 5)
-            bonus_level_time -= 60 * 5;
-        */
         bonus_perfect = 0;
         bonus_barrel_remove (num);
         bonus_barrel_add (screen_width / 2, 100, 3, 0, 5);
@@ -255,12 +241,24 @@ void bonus_level_start (void)
     bonus_store_player ();
     bonus_level_active = 1;
     bonus_level_time = 30 * 60;
+    bonus_endlevel_timer = 3 * 60;
     player.bonus_level++;
     level_start_timer = 3 * 60;
     bonus_barrel_add (screen_width / 2, 100, 3, 0, 7);
     bonus_perfect = 1;
     //Find megashot powerup and remove it
-    Mix_PlayMusic (music[MUSIC_BONUS], -1);
+    Mix_PlayMusic (music[MUSIC_BONUS], 1);
+
+}
+
+static void bonus_endlevel_draw (void)
+{
+    if (bonus_perfect)
+    {
+        msg_show ("PERFECT", screen_width /2, screen_height - 200, 3, font2, ALIGN_CENTRE, red);
+        msg_show ("50000", player.rect.x + (player.rect.w / 2), player.rect.y - 20, 3, font3, ALIGN_TCENTRE, white);
+
+    }
 
 }
 
@@ -269,14 +267,10 @@ void bonus_level_stop (void)
     fprintf (stdout, "Bonus level stop\n");
     if (bonus_perfect)
     {
-        msg_show ("PERFECT", screen_width /2, screen_height - 200, 3, font2, ALIGN_CENTRE, red);
-        msg_show ("50000", player.rect.x + (player.rect.w / 2), player.rect.y - 20, 3, font3, ALIGN_TCENTRE, white);
-
-        player.score += 50000;
+       player.score += 50000;
     }
     bonus_restore_player ();
     bonus_level_active = 0;
-    //TODO Put in a wait loop so the next level doesn't start so quickly
     gamestate = GAME_RUNNING;    Mix_PlayMusic (music[current_music], -1);//Start up the music again
     level_up ();
 }
@@ -334,8 +328,20 @@ void bonus_draw (void)
         }
     }
 
+    //Don't start the next level until the last barrel has gone
+    //Also wait 3 seconds after the last barrel before we start the next level
     if (found && bonus_level_time > 0)
         bonus_level_time--;
-    else if (bonus_level_time <= 0 && !found)
+    else if (bonus_level_time <= 0 && !found && bonus_endlevel_timer > 0)
+    {
+        bonus_endlevel_timer--;
+
+    }
+    else if (bonus_level_time <= 0 && !found && bonus_endlevel_timer == 0)
         bonus_level_stop ();
+
+    if (bonus_endlevel_timer == (3 * 60) - 1)
+    {
+        bonus_endlevel_draw ();
+    }
 }
