@@ -78,8 +78,8 @@ static int config_save (void)
         fprintf (stderr, "Error writing config file\n");
         return 1;
     }
-    fwrite (&explosion_type, sizeof(int), 1, fp);
-    fwrite (&bg_rotate, sizeof(int), 1, fp);
+    fwrite (&explosion_type, sizeof(explosion_type), 1, fp);
+    fwrite (&bg_rotate, sizeof(bg_rotate), 1, fp);
     fwrite (&joy_cfg, sizeof(joy_cfg), 1, fp);
     fwrite (&total_playtime, sizeof(total_playtime), 1, fp);
     fclose (fp);

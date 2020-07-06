@@ -80,7 +80,7 @@ void explosions_init (void)
 void explosion_superbomb (int xpos, int ypos)
 {
     int i, j;
-    for (i = 0; i < 32; i++)
+    for (i = 0; i < NUM_EXPLOSIONS; i++)
     {
         for (j = 0; j < 4; j++)
         {
