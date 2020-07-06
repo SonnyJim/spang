@@ -3,7 +3,7 @@ extern int level_start_timer;
 extern int level_end_timer;
 
 void level_up (void);
-void level_change_pause (void);
+void level_start_pause (void);
 void level_end (void);
 
 void level_one (void);

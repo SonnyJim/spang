@@ -126,17 +126,18 @@ void level_start_pause (void)
         level_start_timer--;
 
 }
-
+/*
 static void level_endlevel_draw (void)
 {
-    int r,g,b;
+    //int r,g,b;
     SDL_Rect box;
 
     SDL_SetRenderDrawColor (renderer, 255, 255, 255,0);
-                //SDL_SetRenderDrawColor(renderer, rand() % 255, rand() % 255, rand () % 255, 0);
-                //SDL_RenderDrawPoint (renderer, explosions[i][j].particle_rect.x, explosions[i][j].particle_rect.y);
+    //SDL_SetRenderDrawColor(renderer, rand() % 255, rand() % 255, rand () % 255, 0);
+    //SDL_RenderDrawPoint (renderer, explosions[i][j].particle_rect.x, explosions[i][j].particle_rect.y);
     SDL_RenderFillRect (renderer, &box);
 }
+*/
 void level_endlevel_loop (void)
 {
  //   fprintf (stdout, "level_endlevel_loop ()\n");

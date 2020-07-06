@@ -129,7 +129,7 @@ void record_save (long score)
     {
         fprintf (stderr, "Error deflating record buffer to file\n");
     }
-    fprintf (stdout, "Record Filesize: %li Returned: %i.  Wrote %li frames\n", filesize, ret, rec_buffer_counter);
+    fprintf (stdout, "Record Filesize: %i Returned: %i.  Wrote %i frames\n", filesize, ret, rec_buffer_counter);
 
     free (buffer);
 }
