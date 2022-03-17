@@ -390,11 +390,11 @@ int sdl_init (void)
     //screen_height = videomode.h;
     //screen_width = videomode.w;
 
-    screen_width = 1280;
+    screen_width = 640;
     screen_height = 480;
 
     //window = SDL_CreateWindow("Spang!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, 0);
-    window = SDL_CreateWindow("Spang!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, SDL_WINDOW_FULLSCREEN);
+    window = SDL_CreateWindow("Spang!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, screen_height, SDL_WINDOW_FULLSCREEN);
 
     SDL_ShowCursor(SDL_DISABLE);
 
@@ -410,6 +410,11 @@ int sdl_init (void)
     {
         fprintf (stderr, "Error creating software renderer: %s\n", SDL_GetError());
         return 1;
+    }
+    //SDL_RenderSetLogicalSize(renderer, 640, 480);
+    if (SDL_RenderSetScale(renderer, 2, 1) != 0)
+    {
+    	fprintf (stderr, "Error creating render scale: %s\n", SDL_GetError());
     }
 
 /*
