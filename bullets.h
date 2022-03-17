@@ -8,7 +8,7 @@ struct bullet_t
     int size;
 };
 
-struct bullet_t bullets[MAX_BULLETS];
+extern struct bullet_t bullets[MAX_BULLETS];
 
 void bullets_init (void);
 void bullets_draw (void);

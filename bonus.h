@@ -13,7 +13,7 @@ struct barrel_t
     int strength;
 };
 
-struct barrel_t barrels[BONUS_BARRELS];
+extern struct barrel_t barrels[BONUS_BARRELS];
 
 extern SDL_Texture *bonus_tex;
 

@@ -31,7 +31,7 @@ struct enemy
     int size;
 };
 
-struct enemy enemies[MAX_ENEMIES];
+extern struct enemy enemies[MAX_ENEMIES];
 
 struct enemy_bullet
 {
@@ -41,7 +41,7 @@ struct enemy_bullet
     bullet_t type;
 };
 
-struct enemy_bullet enemy_bullets[MAX_ENEMIES];
+extern struct enemy_bullet enemy_bullets[MAX_ENEMIES];
 
 void enemy_draw (void);
 void enemy_hit (int num);

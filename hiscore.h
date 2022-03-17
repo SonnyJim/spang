@@ -7,7 +7,7 @@ struct hiscore_t
     char initials[3];
 };
 
-struct hiscore_t hiscores[NUM_HISCORES];
+extern struct hiscore_t hiscores[NUM_HISCORES];
 extern int hiscore_position;
 
 int hiscore_add (void);

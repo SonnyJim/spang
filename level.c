@@ -152,7 +152,7 @@ void level_endlevel_loop (void)
         fprintf (stdout, "Start next level: %i\n", player.level);
         gamestate = GAME_RUNNING;
 
-        if (player.level != 0 && player.level % 5 == 1)
+        if (player.level != 0 && player.level % 10 == 1)
         {
             bonus_level_start ();
         }

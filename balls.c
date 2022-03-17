@@ -1,5 +1,6 @@
 #include "spang.h"
 
+struct ball balls[MAX_BALLS];
 Mix_Chunk *levelup = NULL;
 
 void balls_speed_change (void)

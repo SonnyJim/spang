@@ -3,6 +3,7 @@
 //SDL_Rect bullet_rects[MAX_BULLETS];
 Uint32 bullet_timer = 0;
 int bullets_on_screen = 0;
+struct bullet_t bullets[MAX_BULLETS];
 
 void bullets_init (void)
 {

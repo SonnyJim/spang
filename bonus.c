@@ -1,8 +1,9 @@
 #include "spang.h"
 SDL_Texture *bonus_tex;
+struct barrel_t barrels[BONUS_BARRELS];
 
-#define BARREL_W 50
-#define BARREL_H 50
+#define BARREL_W 20
+#define BARREL_H 20
 #define GRAVITY 0.1
 
 #define NUM_TARGETS 4

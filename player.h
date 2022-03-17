@@ -39,4 +39,4 @@ struct player_t
     int laps;
 };
 
-struct player_t player;
+extern struct player_t player;

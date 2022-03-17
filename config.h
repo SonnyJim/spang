@@ -23,5 +23,5 @@ struct joy_cfg_t
     int pause;
 };
 
-struct joy_cfg_t joy_cfg;
-struct joy_cfg_t joy_cfg_new;
+extern struct joy_cfg_t joy_cfg;
+extern struct joy_cfg_t joy_cfg_new;

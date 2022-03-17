@@ -127,7 +127,7 @@ void amode_draw (void)
     if (gamestate == GAME_AMODE)
     {
         render_string_centre ("Press Fire to start or Space for Config", screen_height - 100, green, font3);
-        amode_scroller_draw ();
+        //amode_scroller_draw ();
     }
     else if (gamestate == GAME_HSENTRY)
         render_string_centre ("Enter initials", screen_height - 100, green, font3);

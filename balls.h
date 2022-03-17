@@ -11,7 +11,7 @@ struct ball
     int hits;
 };
 
-struct ball balls[MAX_BALLS];
+extern struct ball balls[MAX_BALLS];
 
 void ball_add (int size, int xpos, int ypos, int speed, int direction, int strength);
 void ball_hit (int ball_num);

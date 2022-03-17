@@ -1,5 +1,6 @@
 #include "spang.h"
 int hiscore_position;
+struct hiscore_t hiscores[NUM_HISCORES];
 
 void hiscore_draw (void)
 {

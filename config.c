@@ -10,6 +10,8 @@ int config_index = 0;
 int config_input_index = 0;
 Uint32 total_playtime = 0;
 
+struct joy_cfg_t joy_cfg;
+struct joy_cfg_t joy_cfg_new;
 const char* config_input_text[] = {"Left", "Right", "Up", "Down", "Fire", "Smartbomb", "Pause"};
 
 enum

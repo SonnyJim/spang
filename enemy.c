@@ -3,6 +3,8 @@
 #define ENEMY_BULLET_NORMAL_DELAY 60
 #define ENEMY_BULLET_HOMING_DELAY 120
 #define GRAVITY_BALL 2
+struct enemy_bullet enemy_bullets[MAX_ENEMIES];
+struct enemy enemies[MAX_ENEMIES];
 
 void enemy_bullet_add (int xpos, int ypos, bullet_t type)
 {

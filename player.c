@@ -2,6 +2,7 @@
 //SDL_Rect player_rect;
 SDL_Rect player_hitrect1;
 SDL_Rect player_hitrect2;
+struct player_t player;
 
 Mix_Chunk *snd_alarm;
 
